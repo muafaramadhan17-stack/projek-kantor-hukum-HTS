@@ -1033,6 +1033,7 @@ export default function App() {
                 alt="Logo HTS" 
                 className="hts-chat-brand-img"
                 referrerPolicy="no-referrer"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/law_firm_logo.jpg'; }}
               />
               <div>
                 <span className="hts-chat-brand-title">Asisten Virtual HTS</span>
