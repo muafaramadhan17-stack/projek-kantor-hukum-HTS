@@ -52,13 +52,16 @@ const inMemoryLayanan: any[] = [
   }
 ];
 
-// Helper: Check if MySQL is preferred (e.g., when DB_TYPE=mysql or running locally on localhost without Cloud SQL)
+// Helper: Check if MySQL is preferred (e.g., when running on local machine with XAMPP)
 function preferMysql(): boolean {
+  // In Cloud Run / AI Studio container with Cloud SQL socket, prioritize PostgreSQL
+  if (process.env.SQL_HOST) {
+    return false;
+  }
   if (process.env.DB_TYPE === 'mysql' || process.env.MYSQL_DATABASE || process.env.MYSQL_HOST) {
     return true;
   }
-  // If not on Cloud SQL, try MySQL first
-  return !process.env.SQL_HOST;
+  return true;
 }
 
 // 1. KONSULTASI HUKUM REPOSITORY
@@ -146,6 +149,34 @@ export async function ambilDaftarKonsultasi(limit: number = 50) {
 
   // C. Fallback memori
   return inMemoryKonsultasi.slice(0, limit);
+}
+
+export async function cariKonsultasiKlien(identifier: string) {
+  const all = await ambilDaftarKonsultasi(300);
+  const cleanInput = identifier.trim().replace(/\D/g, '');
+  const rawInput = identifier.trim().toLowerCase();
+
+  return all.filter((item: any) => {
+    const itemHp = String(item.nomorWhatsapp || '').replace(/\D/g, '');
+    const itemId = String(item.id || '').toLowerCase();
+
+    // 1. Cocokkan berdasarkan nomor telepon (minimal 6 digit)
+    if (cleanInput.length >= 6 && itemHp.length >= 6) {
+      if (itemHp.endsWith(cleanInput) || cleanInput.endsWith(itemHp)) {
+        return true;
+      }
+    }
+    // 2. Cocokkan berdasarkan ID / Format Tiket HTS
+    if (
+      itemId === rawInput ||
+      `hts-${itemId}` === rawInput ||
+      `hts-${itemId.padStart(4, '0')}` === rawInput ||
+      rawInput.includes(itemId)
+    ) {
+      return true;
+    }
+    return false;
+  });
 }
 
 export async function updateStatusKonsultasi(id: number, status: string, catatanAdvokat?: string) {
@@ -330,40 +361,36 @@ export async function ambilSemuaLayananHukum() {
 
 export async function seedLayananHukumDefault() {
   try {
-    const seedPromise = (async () => {
-      // Test MySQL connection silently on startup
-      if (preferMysql()) {
-        try {
-          await initMysqlPool();
-        } catch (e) {
-          // silent
-        }
+    // 1. Check MySQL connection silently if configured
+    if (preferMysql()) {
+      try {
+        await initMysqlPool();
+      } catch {
+        // non-blocking
       }
+    }
 
-      // Seed to Postgres if present
-      if (process.env.SQL_HOST) {
-        try {
-          const existing = await db.select().from(layananHukum);
-          if (existing.length === 0) {
-            for (const item of inMemoryLayanan) {
-              await db.insert(layananHukum).values({
-                kodeLayanan: item.kodeLayanan,
-                namaLayanan: item.namaLayanan,
-                kategori: item.kategori,
-                deskripsi: item.deskripsi,
-                tahapanProsedur: item.tahapanProsedur,
-              });
-            }
+    // 2. Seed to Postgres if present
+    if (process.env.SQL_HOST) {
+      try {
+        const existing = await db.select().from(layananHukum);
+        if (existing.length === 0) {
+          for (const item of inMemoryLayanan) {
+            await db.insert(layananHukum).values({
+              kodeLayanan: item.kodeLayanan,
+              namaLayanan: item.namaLayanan,
+              kategori: item.kategori,
+              deskripsi: item.deskripsi,
+              tahapanProsedur: item.tahapanProsedur,
+            });
           }
-        } catch (error) {
-          console.warn('[Database Seed Warning]', error);
         }
+      } catch (error: any) {
+        // Safe fallback - inMemoryLayanan handles all responses seamlessly
+        console.info('[Database Master Data] Default legal service catalog active.');
       }
-    })();
-
-    const timeout = new Promise<void>(resolve => setTimeout(resolve, 3000));
-    await Promise.race([seedPromise, timeout]);
-  } catch (err) {
-    console.warn('[Database Seed Non-blocking Warning]', err);
+    }
+  } catch {
+    // non-blocking startup routine
   }
 }

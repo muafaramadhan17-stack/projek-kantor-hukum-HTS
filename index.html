@@ -124,42 +124,45 @@
     
     <style>
       /* ==========================================================================
-         SISTEM DESAIN MINIMALIS & PALET WARNA RESMI (ANTI-AI SLOP)
+         SISTEM DESAIN FORMAL & PALET BIRU RESMI KANTOR HUKUM (ANTI-AI SLOP)
          ========================================================================== */
       :root {
         --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         --font-heading: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-serif: 'Times New Roman', Times, Georgia, serif;
         
-        /* Palet Bersih & Terbatas */
-        --color-bg: #FFFFFF;
-        --color-surface: #FFFFFF;
-        --color-surface-subtle: #F8FAFC;
-        --color-surface-muted: #F1F5F9;
+        /* Palet Biru Mewah & Elegan Kantor Hukum */
+        --color-bg: #071326;
+        --color-surface: #0E2244;
+        --color-surface-subtle: #122B55;
+        --color-surface-muted: #173668;
         
-        /* Aksen & Teks Utama: Slate 900 / Matte Navy */
-        --color-navy: #0F172A;
-        --color-navy-dark: #020617;
-        --color-navy-light: #1E293B;
+        /* Aksen Navy / Biru Tua Resmi & Emas PERADI */
+        --color-navy: #FFFFFF;
+        --color-navy-dark: #F8FAFC;
+        --color-navy-light: #E2E8F0;
+        --color-gold: #D4AF37;
+        --color-gold-light: #F3E5AB;
         
         /* Aksen Fungsional Khusus WhatsApp */
-        --color-emerald: #16A34A;
-        --color-emerald-dark: #15803D;
+        --color-emerald: #22C55E;
+        --color-emerald-dark: #16A34A;
         
-        /* Tipografi & Kontras */
-        --color-text-main: #0F172A;
-        --color-text-muted: #475569;
-        --color-text-subtle: #64748B;
+        /* Tipografi & Kontras Tinggi di atas Kanvas Biru */
+        --color-text-main: #F8FAFC;
+        --color-text-muted: #CBD5E1;
+        --color-text-subtle: #94A3B8;
         
-        /* Garis Tepi Halus #E2E8F0 */
-        --color-border: #E2E8F0;
-        --color-border-hover: #CBD5E1;
-        --color-border-subtle: #F1F5F9;
+        /* Garis Tepi & Card Border */
+        --color-border: #1E3E72;
+        --color-border-hover: #3B82F6;
+        --color-border-subtle: #162E56;
         
-        /* Elevasi Minimalis (Bukan AI Glow) */
-        --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-        --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-        --shadow-card-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-        --shadow-float: 0 4px 14px 0 rgba(15, 23, 42, 0.08);
+        /* Elevasi */
+        --shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+        --shadow-card: 0 4px 12px 0 rgba(0, 0, 0, 0.25), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+        --shadow-card-hover: 0 8px 24px -4px rgba(0, 0, 0, 0.35);
+        --shadow-float: 0 12px 30px 0 rgba(0, 0, 0, 0.4);
         
         /* Sudut Elemen Terukur */
         --radius-sm: 6px;
@@ -186,6 +189,11 @@
       body {
         font-family: var(--font-sans);
         background-color: var(--color-bg);
+        background-image: 
+          radial-gradient(circle at 50% 0%, rgba(30, 64, 175, 0.35) 0%, transparent 65%),
+          radial-gradient(circle at 100% 40%, rgba(29, 78, 216, 0.2) 0%, transparent 55%),
+          radial-gradient(circle at 0% 80%, rgba(15, 23, 42, 0.5) 0%, transparent 55%);
+        background-attachment: fixed;
         color: var(--color-text-main);
         line-height: 1.65;
         overflow-x: hidden;
@@ -210,27 +218,31 @@
       
       .container {
         width: 100%;
-        max-width: 1160px;
+        max-width: 1180px;
         margin: 0 auto;
         padding: 0 2rem;
       }
 
       /* ==========================================================================
-         1. NAVBAR STICKY MINIMALIS
+         1. NAVBAR STICKY DENGAN LAYOUT GRID (RESPONSIF, PRESISI & PROPORSIONAL)
          ========================================================================== */
       header {
         position: sticky;
         top: 0;
-        background: #FFFFFF;
+        background: rgba(8, 20, 42, 0.94);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--color-border);
         z-index: 100;
       }
       
+      /* Grid 3 Kolom: Brand Identity (260px) | Menu Navigasi (1fr) | Quick Action Portal & WA (auto) */
       .nav-inner {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
-        justify-content: space-between;
-        height: 76px;
+        gap: 1.5rem;
+        height: 82px;
       }
       
       .brand-logo-wrap {
@@ -240,13 +252,14 @@
       }
       
       .brand-logo-img {
-        width: 44px;
-        height: 44px;
+        width: 46px;
+        height: 46px;
         object-fit: contain;
-        background: transparent;
+        background: rgba(14, 34, 68, 0.8);
         border-radius: var(--radius-sm);
         border: 1px solid var(--color-border);
         display: block;
+        padding: 2px;
       }
       
       .brand-text {
@@ -256,9 +269,9 @@
       
       .brand-title {
         font-family: var(--font-heading);
-        font-size: 1.12rem;
+        font-size: 1.15rem;
         font-weight: 700;
-        color: var(--color-navy);
+        color: #FFFFFF;
         line-height: 1.2;
         letter-spacing: -0.02em;
       }
@@ -266,57 +279,105 @@
       .brand-tagline {
         font-size: 0.72rem;
         font-weight: 500;
-        color: var(--color-text-subtle);
-        letter-spacing: 0.01em;
+        color: #93C5FD;
+        letter-spacing: 0.02em;
       }
       
       .nav-links {
         display: flex;
-        gap: 2rem;
+        gap: 1.75rem;
         align-items: center;
+        justify-content: center;
         list-style: none;
       }
       
       .nav-link {
         font-size: 0.92rem;
         font-weight: 500;
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         transition: var(--transition);
       }
       
       .nav-link:hover {
-        color: var(--color-navy);
+        color: #FFFFFF;
+      }
+
+      /* Grid Aksi Navbar: 3 Tombol Fungsional (Status Klien, Login Admin, Chat WhatsApp) */
+      .nav-actions-grid {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        align-items: center;
+        gap: 0.65rem;
+      }
+
+      .btn-nav-client {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.55rem 0.95rem;
+        border-radius: var(--radius-md);
+        border: 1px solid #38BDF8;
+        background: rgba(56, 189, 248, 0.12);
+        color: #E0F2FE;
+        font-size: 0.86rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .btn-nav-client:hover {
+        background: #38BDF8;
+        color: #08162D;
+        border-color: #38BDF8;
+      }
+
+      .btn-nav-admin {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.55rem 0.95rem;
+        border-radius: var(--radius-md);
+        border: 1px solid #D4AF37;
+        background: rgba(212, 175, 55, 0.14);
+        color: #FEF3C7;
+        font-size: 0.86rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .btn-nav-admin:hover {
+        background: #D4AF37;
+        color: #08162D;
+        border-color: #D4AF37;
       }
       
       .btn-nav-wa {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.6rem 1.15rem;
+        gap: 0.45rem;
+        padding: 0.55rem 1.05rem;
         border-radius: var(--radius-md);
-        border: 1px solid var(--color-border);
-        color: var(--color-navy);
-        background: #FFFFFF;
+        border: 1px solid #16A34A;
+        color: #FFFFFF;
+        background: #22C55E;
         font-weight: 600;
         font-size: 0.88rem;
         transition: var(--transition);
-        box-shadow: var(--shadow-xs);
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
       }
       
       .btn-nav-wa:hover {
-        background: var(--color-navy);
-        color: #FFFFFF;
-        border-color: var(--color-navy);
+        background: #16A34A;
+        border-color: #15803D;
       }
       
       .mobile-menu-btn {
         display: none;
-        background: none;
+        background: rgba(14, 34, 68, 0.8);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-sm);
         padding: 0.5rem 0.75rem;
         cursor: pointer;
-        color: var(--color-navy);
+        color: #FFFFFF;
         font-size: 1.2rem;
       }
       
@@ -326,7 +387,22 @@
         gap: 1rem;
         padding: 1.25rem 1.75rem;
         border-top: 1px solid var(--color-border);
-        background: #FFFFFF;
+        background: #08162D;
+      }
+
+      @media (max-width: 1040px) {
+        .nav-inner {
+          grid-template-columns: 1fr auto;
+        }
+        .nav-links {
+          display: none !important;
+        }
+        .nav-actions-grid {
+          display: none !important;
+        }
+        .mobile-menu-btn {
+          display: block !important;
+        }
       }
       
       .mobile-menu.open {
@@ -334,10 +410,10 @@
       }
 
       /* ==========================================================================
-         2. HERO SECTION LAPANG & BERWIBAWA
+         2. HERO SECTION LAPANG & BERWIBAWA (DEEP BLUE THEME)
          ========================================================================== */
       .hero-section {
-        background-color: #FFFFFF;
+        background: linear-gradient(180deg, #071326 0%, #0B1D3A 50%, #08162D 100%);
         position: relative;
         padding: 6.5rem 0 5.5rem;
         border-bottom: 1px solid var(--color-border);
@@ -347,7 +423,7 @@
         justify-content: center;
       }
 
-      /* Latar Belakang Tenang & Bermartabat (Bukan 3D Melayang / Ayunan AI Slop) */
+      /* Latar Belakang Tenang & Bermartabat Lady Justice */
       .hero-justitia-backdrop {
         position: absolute;
         top: 50%;
@@ -361,8 +437,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        opacity: 0.08;
-        mix-blend-mode: multiply;
+        opacity: 0.16;
+        mix-blend-mode: screen;
         user-select: none;
       }
 
@@ -373,7 +449,7 @@
         max-height: 520px;
         object-fit: contain;
         object-position: center center;
-        filter: grayscale(100%) contrast(110%);
+        filter: contrast(130%) brightness(120%);
       }
       
       .hero-grid {
@@ -402,14 +478,14 @@
       }
 
       .hero-emblem-img {
-        width: 72px;
-        height: 72px;
+        width: 76px;
+        height: 76px;
         object-fit: contain;
         border-radius: var(--radius-lg);
         border: 1px solid var(--color-border);
-        background: #FFFFFF;
+        background: #0E2244;
         padding: 6px;
-        box-shadow: var(--shadow-xs);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
       }
       
       .hero-badge {
@@ -417,12 +493,12 @@
         align-items: center;
         gap: 0.4rem;
         padding: 0.35rem 0.95rem;
-        background: var(--color-surface-muted);
-        border: 1px solid var(--color-border);
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.35);
         border-radius: var(--radius-full);
         font-size: 0.78rem;
         font-weight: 600;
-        color: #334155;
+        color: #7DD3FC;
         letter-spacing: 0.05em;
         text-transform: uppercase;
         margin-bottom: 1.25rem;
@@ -431,15 +507,16 @@
       .hero-title {
         font-size: 3rem;
         font-weight: 800;
-        color: var(--color-navy);
+        color: #FFFFFF;
         margin-bottom: 1.25rem;
         line-height: 1.15;
         letter-spacing: -0.03em;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       }
       
       .hero-subtitle {
         font-size: 1.15rem;
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         font-weight: 400;
         margin-bottom: 2.25rem;
         max-width: 680px;
@@ -460,27 +537,27 @@
         align-items: center;
         gap: 0.6rem;
         padding: 0.9rem 1.8rem;
-        background: var(--color-navy);
+        background: #22C55E;
         color: #FFFFFF;
         border-radius: var(--radius-md);
         font-weight: 600;
         font-size: 0.95rem;
-        border: 1px solid var(--color-navy);
+        border: 1px solid #16A34A;
         transition: var(--transition);
-        box-shadow: var(--shadow-xs);
+        box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
       }
       
       .btn-primary-wa:hover {
-        background: var(--color-navy-light);
-        border-color: var(--color-navy-light);
+        background: #16A34A;
+        border-color: #15803D;
       }
       
       .btn-secondary {
         display: inline-flex;
         align-items: center;
         padding: 0.9rem 1.8rem;
-        background: #FFFFFF;
-        color: var(--color-navy);
+        background: rgba(14, 34, 68, 0.85);
+        color: #FFFFFF;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         font-weight: 600;
@@ -490,8 +567,8 @@
       }
       
       .btn-secondary:hover {
-        border-color: var(--color-border-hover);
-        background: var(--color-surface-subtle);
+        border-color: #38BDF8;
+        background: #163668;
       }
 
       /* Hero Trust Credential Strip */
@@ -514,11 +591,11 @@
         gap: 0.5rem;
         font-size: 0.86rem;
         font-weight: 500;
-        color: var(--color-text-subtle);
+        color: #94A3B8;
       }
 
       .hero-trust-sep {
-        color: var(--color-border-hover);
+        color: var(--color-border);
         font-size: 0.9rem;
         user-select: none;
       }
@@ -539,22 +616,38 @@
       .section-title {
         font-size: 2.25rem;
         font-weight: 700;
-        color: var(--color-navy);
+        color: #FFFFFF;
         margin-bottom: 0.75rem;
         letter-spacing: -0.025em;
       }
       
       .section-desc {
         font-size: 1.05rem;
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         line-height: 1.6;
       }
 
       /* ==========================================================================
-         3. LAYANAN (3 TAB BERSIH & MINIMALIS)
+         3. FORMAT TIMES NEW ROMAN KHUSUS BIDANG LAYANAN HUKUM (USER REQUIREMENT)
          ========================================================================== */
+      #layanan,
+      #layanan *,
+      .services-section,
+      .services-section *,
+      .services-section .section-title,
+      .services-section .section-desc,
+      .services-section .tab-btn,
+      .services-section .tab-content,
+      .services-section .tab-content-title,
+      .services-section .tab-content-sub,
+      .services-section .service-title-text,
+      .services-section .service-item-card,
+      .services-section .service-wa-btn {
+        font-family: 'Times New Roman', Times, 'Nimbus Roman No9 L', serif !important;
+      }
+
       .services-section {
-        background: var(--color-surface-subtle);
+        background: #081932;
         border-top: 1px solid var(--color-border);
         border-bottom: 1px solid var(--color-border);
       }
@@ -569,11 +662,10 @@
       
       .tab-btn {
         padding: 0.75rem 1.5rem;
-        font-family: var(--font-sans);
         font-weight: 600;
-        font-size: 0.92rem;
-        color: var(--color-text-muted);
-        background: #FFFFFF;
+        font-size: 1rem;
+        color: #CBD5E1;
+        background: #0D2244;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         cursor: pointer;
@@ -582,13 +674,13 @@
       }
       
       .tab-btn.active, .tab-btn:hover {
-        border-color: var(--color-navy);
-        background: var(--color-navy);
+        border-color: #38BDF8;
+        background: #1D4ED8;
         color: #FFFFFF;
       }
       
       .tab-content {
-        background: #FFFFFF;
+        background: #0E2244;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
         padding: 2.75rem;
@@ -612,15 +704,15 @@
       }
       
       .tab-content-title {
-        font-size: 1.35rem;
+        font-size: 1.45rem;
         font-weight: 700;
-        color: var(--color-navy);
-        letter-spacing: -0.02em;
+        color: #FFFFFF;
+        letter-spacing: -0.01em;
       }
       
       .tab-content-sub {
-        font-size: 0.9rem;
-        color: var(--color-text-subtle);
+        font-size: 0.96rem;
+        color: #94A3B8;
         margin-top: 0.2rem;
       }
       
@@ -632,10 +724,10 @@
       }
       
       .service-item-card {
-        background: #FFFFFF;
+        background: #0F2750;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
-        padding: 1.25rem 1.35rem;
+        padding: 1.35rem 1.45rem;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -645,8 +737,8 @@
       }
       
       .service-item-card:hover {
-        border-color: var(--color-border-hover);
-        box-shadow: var(--shadow-card-hover);
+        border-color: #38BDF8;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
         transform: translateY(-2px);
       }
       
@@ -657,17 +749,17 @@
       }
       
       .service-icon {
-        color: var(--color-navy);
+        color: #F8FAFC;
         font-size: 0.85rem;
         font-weight: 700;
         line-height: 1;
         margin-top: 3px;
         flex-shrink: 0;
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
         border-radius: var(--radius-sm);
-        background: var(--color-surface-muted);
-        border: 1px solid var(--color-border);
+        background: #173668;
+        border: 1px solid #285494;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -675,8 +767,8 @@
       
       .service-title-text {
         font-weight: 600;
-        font-size: 0.95rem;
-        color: var(--color-text-main);
+        font-size: 1.05rem;
+        color: #F8FAFC;
         line-height: 1.45;
       }
       
@@ -685,11 +777,11 @@
         align-items: center;
         justify-content: center;
         gap: 0.4rem;
-        padding: 0.5rem 0.9rem;
-        font-size: 0.82rem;
+        padding: 0.55rem 0.95rem;
+        font-size: 0.88rem;
         font-weight: 600;
-        color: var(--color-navy);
-        background: #FFFFFF;
+        color: #93C5FD;
+        background: #071326;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-sm);
         transition: var(--transition);
@@ -697,16 +789,16 @@
       }
       
       .service-wa-btn:hover {
-        background: var(--color-navy);
+        background: #1D4ED8;
         color: #FFFFFF;
-        border-color: var(--color-navy);
+        border-color: #38BDF8;
       }
 
       /* ==========================================================================
-         4. TENTANG KAMI
+         4. TENTANG KAMI (DEEP BLUE THEME)
          ========================================================================== */
       .about-section {
-        background: #FFFFFF;
+        background: #071326;
       }
       
       .about-grid {
@@ -718,14 +810,14 @@
       
       .about-lead {
         font-size: 1.1rem;
-        color: var(--color-text-main);
+        color: #F8FAFC;
         margin-bottom: 1.25rem;
         line-height: 1.7;
         font-weight: 500;
       }
       
       .about-body {
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         margin-bottom: 2rem;
         line-height: 1.7;
       }
@@ -735,20 +827,20 @@
         align-items: center;
         gap: 0.6rem;
         padding: 0.8rem 1.35rem;
-        background: var(--color-surface-subtle);
+        background: #0E2244;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         font-size: 0.88rem;
         font-weight: 600;
-        color: var(--color-navy);
+        color: #FEF3C7;
         box-shadow: var(--shadow-xs);
       }
 
       /* ==========================================================================
-         FORMULIR KONSULTASI HUKUM RESMI
+         FORMULIR KONSULTASI HUKUM RESMI (DEEP BLUE THEME)
          ========================================================================== */
       .consult-section {
-        background: var(--color-surface-subtle);
+        background: #081932;
         border-top: 1px solid var(--color-border);
         padding: 6.5rem 0;
       }
@@ -770,9 +862,9 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: #FFFFFF;
-        border: 1px solid var(--color-border);
-        color: var(--color-navy);
+        background: rgba(56, 189, 248, 0.14);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #7DD3FC;
         padding: 0.35rem 0.85rem;
         border-radius: var(--radius-full);
         font-size: 0.78rem;
@@ -785,13 +877,13 @@
       .consult-title {
         font-size: 2.2rem;
         font-weight: 700;
-        color: var(--color-navy);
+        color: #FFFFFF;
         line-height: 1.25;
         letter-spacing: -0.025em;
       }
 
       .consult-desc {
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         font-size: 0.98rem;
         line-height: 1.65;
       }
@@ -807,7 +899,7 @@
         display: flex;
         align-items: flex-start;
         gap: 0.85rem;
-        background: #FFFFFF;
+        background: #0E2244;
         border: 1px solid var(--color-border);
         padding: 1rem 1.25rem;
         border-radius: var(--radius-md);
@@ -816,7 +908,7 @@
 
       .consult-guarantee-icon {
         font-size: 1.15rem;
-        color: var(--color-navy);
+        color: #38BDF8;
         flex-shrink: 0;
         margin-top: 2px;
       }
@@ -824,22 +916,22 @@
       .consult-guarantee-title {
         font-weight: 600;
         font-size: 0.92rem;
-        color: var(--color-navy);
+        color: #FFFFFF;
         margin-bottom: 0.2rem;
       }
 
       .consult-guarantee-text {
         font-size: 0.85rem;
-        color: var(--color-text-subtle);
+        color: #94A3B8;
         line-height: 1.5;
       }
 
       .consult-form-card {
-        background: #FFFFFF;
+        background: #0E2244;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
         padding: 2.5rem 2.25rem;
-        box-shadow: var(--shadow-card);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       }
 
       .form-header {
@@ -851,14 +943,14 @@
       .form-header-title {
         font-size: 1.35rem;
         font-weight: 700;
-        color: var(--color-navy);
+        color: #FFFFFF;
         margin-bottom: 0.35rem;
         letter-spacing: -0.02em;
       }
 
       .form-header-sub {
         font-size: 0.86rem;
-        color: var(--color-text-subtle);
+        color: #94A3B8;
       }
 
       .form-group {
@@ -871,11 +963,11 @@
       .form-label {
         font-size: 0.88rem;
         font-weight: 600;
-        color: var(--color-navy);
+        color: #F8FAFC;
       }
 
       .form-req {
-        color: #DC2626;
+        color: #F87171;
         font-weight: bold;
       }
 
@@ -886,15 +978,15 @@
         border-radius: var(--radius-md);
         font-family: var(--font-sans);
         font-size: 0.92rem;
-        color: var(--color-text-main);
-        background: #FFFFFF;
+        color: #F8FAFC;
+        background: #071326;
         outline: none;
         transition: var(--transition);
       }
 
       .form-input:focus, .form-select:focus, .form-textarea:focus {
-        border-color: var(--color-navy);
-        outline: 2px solid rgba(15, 23, 42, 0.08);
+        border-color: #38BDF8;
+        outline: 2px solid rgba(56, 189, 248, 0.25);
       }
 
       .form-textarea {
@@ -907,16 +999,16 @@
         align-items: flex-start;
         gap: 0.5rem;
         font-size: 0.8rem;
-        color: var(--color-text-subtle);
+        color: #94A3B8;
         margin-bottom: 1.5rem;
         line-height: 1.5;
       }
 
       .btn-submit-consult {
         width: 100%;
-        background: var(--color-navy);
+        background: #1D4ED8;
         color: #FFFFFF;
-        border: 1px solid var(--color-navy);
+        border: 1px solid #3B82F6;
         border-radius: var(--radius-md);
         padding: 0.9rem 1.5rem;
         font-size: 0.95rem;
@@ -927,12 +1019,12 @@
         align-items: center;
         justify-content: center;
         gap: 0.6rem;
-        box-shadow: var(--shadow-xs);
+        box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
       }
 
       .btn-submit-consult:hover {
-        background: var(--color-navy-light);
-        border-color: var(--color-navy-light);
+        background: #2563EB;
+        border-color: #60A5FA;
       }
 
       .btn-submit-consult:disabled {
@@ -945,8 +1037,8 @@
         display: none;
         flex-direction: column;
         gap: 1.25rem;
-        background: #F0FDF4;
-        border: 1px solid #BBF7D0;
+        background: #064E3B;
+        border: 1px solid #059669;
         border-radius: var(--radius-md);
         padding: 2rem;
         text-align: center;
@@ -959,7 +1051,7 @@
       .consult-success-icon {
         width: 48px;
         height: 48px;
-        background: var(--color-emerald);
+        background: #10B981;
         color: #FFFFFF;
         border-radius: var(--radius-full);
         display: flex;
@@ -972,25 +1064,25 @@
       .consult-success-title {
         font-size: 1.3rem;
         font-weight: 700;
-        color: #166534;
+        color: #D1FAE5;
         margin-bottom: 0.3rem;
       }
 
       .consult-ticket-pill {
         display: inline-block;
-        background: #DCFCE7;
-        color: #166534;
+        background: #065F46;
+        color: #A7F3D0;
         font-weight: 700;
         font-size: 0.92rem;
         padding: 0.35rem 0.85rem;
         border-radius: var(--radius-full);
-        border: 1px solid #86EFAC;
+        border: 1px solid #34D399;
         margin: 0.3rem auto 0;
       }
 
       .consult-success-text {
         font-size: 0.9rem;
-        color: #166534;
+        color: #D1FAE5;
         line-height: 1.55;
       }
 
@@ -1002,9 +1094,9 @@
       }
 
       .btn-wa-forward {
-        background: var(--color-emerald);
+        background: #22C55E;
         color: #FFFFFF;
-        border: 1px solid var(--color-emerald-dark);
+        border: 1px solid #16A34A;
         border-radius: var(--radius-md);
         padding: 0.85rem 1.25rem;
         font-size: 0.92rem;
@@ -1018,12 +1110,12 @@
       }
 
       .btn-wa-forward:hover {
-        background: var(--color-emerald-dark);
+        background: #16A34A;
       }
 
       .btn-reset-form {
         background: transparent;
-        color: var(--color-navy);
+        color: #93C5FD;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         padding: 0.65rem 1rem;
@@ -1034,15 +1126,15 @@
       }
 
       .btn-reset-form:hover {
-        background: var(--color-surface-subtle);
-        border-color: var(--color-border-hover);
+        background: #0E2244;
+        border-color: #38BDF8;
       }
 
       /* ==========================================================================
-         5. KONTAK
+         5. KONTAK (DEEP BLUE THEME)
          ========================================================================== */
       .contact-section {
-        background: #FFFFFF;
+        background: #071326;
         border-top: 1px solid var(--color-border);
       }
       
@@ -1053,7 +1145,7 @@
       }
       
       .contact-card {
-        background: #FFFFFF;
+        background: #0E2244;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
         padding: 2.25rem 1.85rem;
@@ -1065,8 +1157,8 @@
       }
       
       .contact-card:hover {
-        border-color: var(--color-border-hover);
-        box-shadow: var(--shadow-card-hover);
+        border-color: #38BDF8;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
         transform: translateY(-2px);
       }
       
@@ -1078,12 +1170,12 @@
         width: 44px;
         height: 44px;
         border-radius: var(--radius-md);
-        background: var(--color-surface-subtle);
-        border: 1px solid var(--color-border);
+        background: #173668;
+        border: 1px solid #285494;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-navy);
+        color: #38BDF8;
         font-size: 1.25rem;
         margin-bottom: 1.25rem;
       }
@@ -1091,13 +1183,13 @@
       .contact-card-title {
         font-size: 1.25rem;
         font-weight: 700;
-        color: var(--color-navy);
+        color: #FFFFFF;
         margin-bottom: 0.5rem;
         letter-spacing: -0.02em;
       }
       
       .contact-card-text {
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         font-size: 0.94rem;
         line-height: 1.6;
       }
@@ -1112,15 +1204,15 @@
         font-weight: 600;
         font-size: 0.88rem;
         border: 1px solid var(--color-border);
-        color: var(--color-navy);
-        background: #FFFFFF;
+        color: #E2E8F0;
+        background: #071326;
         transition: var(--transition);
       }
       
       .contact-btn:hover {
-        background: var(--color-navy);
+        background: #1D4ED8;
         color: #FFFFFF;
-        border-color: var(--color-navy);
+        border-color: #38BDF8;
       }
 
       /* ==========================================================================
@@ -1128,7 +1220,7 @@
          ========================================================================== */
       .map-container-card {
         margin-top: 2.75rem;
-        background: #FFFFFF;
+        background: #0E2244;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
         overflow: hidden;
@@ -1137,12 +1229,12 @@
       }
 
       .map-container-card:hover {
-        border-color: var(--color-border-hover);
-        box-shadow: var(--shadow-card);
+        border-color: #38BDF8;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       }
 
       .map-header-bar {
-        background: var(--color-navy);
+        background: #071326;
         color: #FFFFFF;
         padding: 0.9rem 1.5rem;
         display: flex;
@@ -1150,6 +1242,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 0.5rem;
+        border-bottom: 1px solid var(--color-border);
       }
 
       .map-header-title {
@@ -1164,7 +1257,7 @@
         position: relative;
         width: 100%;
         height: 380px;
-        background: var(--color-surface-subtle);
+        background: #071326;
       }
 
       .map-iframe-wrapper iframe {
@@ -1175,7 +1268,7 @@
 
       .map-footer-bar {
         padding: 1rem 1.5rem;
-        background: var(--color-surface-subtle);
+        background: #0A1C38;
         border-top: 1px solid var(--color-border);
         display: flex;
         align-items: center;
@@ -1186,14 +1279,14 @@
 
       .map-address-text {
         font-size: 0.9rem;
-        color: var(--color-text-main);
+        color: #CBD5E1;
       }
 
       .map-action-btn {
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        background: var(--color-navy);
+        background: #1D4ED8;
         color: #FFFFFF;
         border-radius: var(--radius-sm);
         padding: 0.6rem 1.1rem;
@@ -1204,14 +1297,14 @@
       }
 
       .map-action-btn:hover {
-        background: var(--color-navy-light);
+        background: #2563EB;
       }
 
       /* ==========================================================================
-         6. FOOTER
+         6. FOOTER (DEEP MIDNIGHT BLUE)
          ========================================================================== */
       footer {
-        background: #FFFFFF;
+        background: #040A15;
         border-top: 1px solid var(--color-border);
         padding: 5rem 0 2.5rem;
       }
@@ -1231,13 +1324,13 @@
       
       .footer-desc {
         font-size: 0.92rem;
-        color: var(--color-text-muted);
+        color: #94A3B8;
         max-width: 440px;
         line-height: 1.65;
       }
       
       .footer-motto-quote {
-        color: var(--color-navy);
+        color: #7DD3FC;
         font-size: 0.92rem;
         font-weight: 600;
       }
@@ -1246,7 +1339,7 @@
         font-size: 0.95rem;
         font-weight: 700;
         margin-bottom: 1.25rem;
-        color: var(--color-navy);
+        color: #FFFFFF;
         text-transform: uppercase;
         letter-spacing: 0.04em;
       }
@@ -1260,12 +1353,12 @@
       }
       
       .footer-nav-list a {
-        color: var(--color-text-muted);
+        color: #CBD5E1;
         transition: var(--transition);
       }
       
       .footer-nav-list a:hover {
-        color: var(--color-navy);
+        color: #38BDF8;
       }
       
       .footer-contact-info {
@@ -1273,14 +1366,14 @@
         flex-direction: column;
         gap: 0.75rem;
         font-size: 0.9rem;
-        color: var(--color-text-muted);
+        color: #CBD5E1;
       }
       
       .footer-bottom {
         border-top: 1px solid var(--color-border);
         padding-top: 2rem;
         text-align: center;
-        color: var(--color-text-subtle);
+        color: #64748B;
         font-size: 0.85rem;
       }
 
@@ -1768,21 +1861,84 @@
         border-color: #64748B;
       }
 
+      /* Portal Navigation Tabs (Calon Klien vs Advokat Admin) */
+      .portal-tabs-nav {
+        display: flex;
+        background: #0B1728;
+        border-bottom: 1px solid #1E293B;
+        padding: 0 1.25rem;
+        gap: 0.5rem;
+      }
+      .portal-tab-btn {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: #94A3B8;
+        padding: 0.75rem 1.15rem;
+        font-weight: 600;
+        font-size: 0.88rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        transition: all 0.15s ease;
+      }
+      .portal-tab-btn:hover {
+        color: #E2E8F0;
+      }
+      .portal-tab-btn.active {
+        color: #38BDF8;
+        border-bottom-color: #38BDF8;
+        background: rgba(56, 189, 248, 0.08);
+      }
+      .portal-tab-btn.admin-tab.active {
+        color: #FCD34D;
+        border-bottom-color: #FCD34D;
+        background: rgba(252, 211, 77, 0.08);
+      }
+
       /* Portal Body */
       .portal-body {
         flex: 1;
         overflow-y: auto;
-        padding: 1.25rem 1.5rem;
+        padding: 1.5rem;
         background: #F8FAFC;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
       }
 
+      /* Client Status Lookup Styles */
+      .portal-client-card {
+        max-width: 580px;
+        margin: 1.5rem auto;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 2.25rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .client-result-box {
+        margin-top: 1.5rem;
+        border-top: 1px solid #E2E8F0;
+        padding-top: 1.25rem;
+      }
+      .client-ticket-badge {
+        display: inline-block;
+        font-family: monospace;
+        font-weight: 700;
+        font-size: 0.95rem;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        padding: 0.25rem 0.65rem;
+        border-radius: 6px;
+        border: 1px solid #BFDBFE;
+      }
+
       /* Login Card */
       .portal-auth-card {
         max-width: 440px;
-        margin: 3rem auto;
+        margin: 2.5rem auto;
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
         border-radius: 12px;
@@ -1846,10 +2002,16 @@
       .portal-auth-btn:hover {
         background: #1E293B;
       }
-      .portal-auth-hint {
+      .portal-security-notice {
         font-size: 0.78rem;
-        color: #94A3B8;
-        margin-top: 1rem;
+        color: #64748B;
+        margin-top: 1.25rem;
+        padding: 0.6rem 0.85rem;
+        background: #F8FAFC;
+        border-radius: 6px;
+        border: 1px solid #E2E8F0;
+        text-align: left;
+        line-height: 1.45;
       }
 
       /* Dashboard Metrics Bar */
@@ -2196,18 +2358,20 @@
           <li><a href="#tentang" class="nav-link">Tentang</a></li>
           <li><a href="#konsultasi" class="nav-link">Konsultasi</a></li>
           <li><a href="#kontak" class="nav-link">Kontak</a></li>
-          <li>
-            <a href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS%2C%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20hukum" target="_blank" rel="noopener noreferrer" class="btn-nav-wa">
-              Konsultasi WhatsApp
-            </a>
-          </li>
-          <li>
-            <button type="button" onclick="bukaPortalAdvokat()" class="btn-nav-portal" title="Akses Database & Ruang Tanggapan Tim Advokat">
-              <span class="portal-dot-live"></span>
-              <span>Portal Advokat 🔒</span>
-            </button>
-          </li>
         </ul>
+
+        <!-- Grid Aksi Navbar: 3 Tombol Proporsional (Cek Status Klien, Login Admin, WhatsApp) -->
+        <div class="nav-actions-grid">
+          <button type="button" onclick="bukaPortalKlien()" class="btn-nav-client" title="Cek Status Permohonan Konsultasi Anda">
+            <span>🔍 Cek Status Klien</span>
+          </button>
+          <button type="button" onclick="bukaPortalAdvokat()" class="btn-nav-admin" title="Login Akses Khusus Advokat & Admin">
+            <span>🔒 Login Admin</span>
+          </button>
+          <a href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS%2C%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20hukum" target="_blank" rel="noopener noreferrer" class="btn-nav-wa" title="Konsultasi Langsung via WhatsApp">
+            <span>💬 WhatsApp</span>
+          </a>
+        </div>
         
         <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Buka Menu Navigasi">
           ☰
@@ -2220,13 +2384,15 @@
         <a href="#tentang" class="nav-link" onclick="closeMobileMenu()">Tentang</a>
         <a href="#konsultasi" class="nav-link" onclick="closeMobileMenu()">Konsultasi Form</a>
         <a href="#kontak" class="nav-link" onclick="closeMobileMenu()">Kontak & Lokasi</a>
-        <a href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS%2C%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20hukum" target="_blank" rel="noopener noreferrer" class="btn-nav-wa" style="text-align: center;">
-          Konsultasi WhatsApp
-        </a>
-        <button type="button" class="btn-nav-portal" onclick="closeMobileMenu(); bukaPortalAdvokat();" style="justify-content: center; width: 100%; padding: 0.75rem; margin-top: 0.35rem;">
-          <span class="portal-dot-live"></span>
-          <span>Portal Advokat & Database 🔒</span>
+        <button type="button" class="btn-nav-client" onclick="closeMobileMenu(); bukaPortalKlien();" style="justify-content: center; width: 100%; padding: 0.75rem;">
+          <span>🔍 Cek Status Konsultasi (Klien)</span>
         </button>
+        <button type="button" class="btn-nav-admin" onclick="closeMobileMenu(); bukaPortalAdvokat();" style="justify-content: center; width: 100%; padding: 0.75rem;">
+          <span>🔒 Login Portal Advokat (Admin)</span>
+        </button>
+        <a href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS%2C%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20hukum" target="_blank" rel="noopener noreferrer" class="btn-nav-wa" style="text-align: center; justify-content: center; padding: 0.75rem;">
+          <span>💬 Konsultasi WhatsApp</span>
+        </a>
       </div>
     </header>
 
@@ -2724,7 +2890,8 @@
               <li><a href="#tentang">Tentang Kami</a></li>
               <li><a href="#konsultasi">Formulir Konsultasi</a></li>
               <li><a href="#kontak">Kontak & Lokasi</a></li>
-              <li><a href="javascript:void(0)" onclick="bukaPortalAdvokat()" style="font-weight: 600; color: #0F172A;">🔒 Portal Advokat & Database</a></li>
+              <li><a href="javascript:void(0)" onclick="bukaPortalKlien()" style="font-weight: 600; color: #38BDF8;">🔍 Cek Status Konsultasi (Klien)</a></li>
+              <li><a href="javascript:void(0)" onclick="bukaPortalAdvokat()" style="font-weight: 600; color: #D4AF37;">🔒 Portal Advokat & Admin</a></li>
             </ul>
           </div>
           
@@ -2740,13 +2907,13 @@
         </div>
         
         <div class="footer-bottom">
-          <p>© 2026 Kantor Hukum HTS & Partners. Seluruh hak cipta dilindungi undang-undang. • <a href="javascript:void(0)" onclick="bukaPortalAdvokat()" style="color: inherit; text-decoration: underline;">Portal Advokat (Internal)</a></p>
+          <p>© 2026 Kantor Hukum HTS & Partners. Seluruh hak cipta dilindungi undang-undang. • <a href="javascript:void(0)" onclick="bukaPortalKlien()" style="color: inherit; text-decoration: underline;">Cek Status Klien</a> | <a href="javascript:void(0)" onclick="bukaPortalAdvokat()" style="color: inherit; text-decoration: underline;">Portal Advokat (Internal)</a></p>
         </div>
       </div>
     </footer>
 
     <!-- ==========================================================================
-         7. MODAL PORTAL KHUSUS ADVOKAT & MONITORING PERKARA (HTS LAWYER WORKSPACE)
+         7. MODAL PORTAL DUAL-AKSES: STATUS KLIEN & WORKSPACE ADVOKAT
          ========================================================================== -->
     <div id="portal-advokat-modal" class="portal-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="portal-header-title">
       <div class="portal-window">
@@ -2755,24 +2922,70 @@
           <div class="portal-header-left">
             <img src="/assets/law_firm_logo.jpg" alt="Logo HTS" class="portal-header-emblem" onerror="this.onerror=null; this.src='/law_firm_logo.jpg';" />
             <div>
-              <h2 id="portal-header-title" class="portal-header-title">Portal Advokat & Manajemen Perkara</h2>
-              <p class="portal-header-subtitle">Kantor Hukum HTS & Partners — Monitoring Database Konsultasi Masuk</p>
+              <h2 id="portal-header-title" class="portal-header-title">Portal Layanan & Konsultasi Hukum</h2>
+              <p class="portal-header-subtitle">Kantor Hukum HTS & Partners — Pengecekan Status & Manajemen Perkara</p>
             </div>
           </div>
           <div class="portal-header-right">
             <span id="portal-db-badge" class="portal-badge-db">🟢 Database Terhubung</span>
-            <button type="button" class="portal-close-btn" onclick="tutupPortalAdvokat()" aria-label="Tutup Portal Advokat">✕</button>
+            <button type="button" class="portal-close-btn" onclick="tutupPortalAdvokat()" aria-label="Tutup Portal">✕</button>
           </div>
+        </div>
+
+        <!-- Mode Switcher Tabs: Calon Klien vs Advokat Admin -->
+        <div class="portal-tabs-nav">
+          <button type="button" id="tab-nav-client" class="portal-tab-btn active" onclick="switchPortalTab('client')">
+            <span>🔍 Cek Status Konsultasi (Calon Klien)</span>
+          </button>
+          <button type="button" id="tab-nav-admin" class="portal-tab-btn admin-tab" onclick="switchPortalTab('admin')">
+            <span>🔒 Login Advokat & Admin</span>
+          </button>
         </div>
 
         <!-- Body -->
         <div class="portal-body">
-          <!-- LAYAR 1: AUTENTIKASI PIN ADVOKAT -->
-          <div id="portal-auth-view" class="portal-auth-card">
+          <!-- LAYAR 0: PENGECEKAN STATUS OLEH CALON KLIEN (ISOLASI DATA TIKET PRIBADI) -->
+          <div id="portal-client-view" class="portal-client-card">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+              <div class="portal-auth-icon" style="background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8;">🔍</div>
+              <h3 class="portal-auth-title" style="margin-bottom: 0.35rem;">Cek Status Permohonan Konsultasi</h3>
+              <p class="portal-auth-desc" style="margin-bottom: 0;">
+                Masukkan Nomor WhatsApp atau ID Tiket Konsultasi yang Anda daftarkan pada formulir untuk memeriksa status dan arahan dari Tim Advokat.
+              </p>
+            </div>
+
+            <form id="form-cek-status-klien" onsubmit="handleCekStatusKlien(event)">
+              <div style="margin-bottom: 1rem;">
+                <input 
+                  type="text" 
+                  id="client-lookup-input" 
+                  class="portal-auth-input" 
+                  placeholder="Contoh: 081234567890 atau HTS-0001" 
+                  style="letter-spacing: normal; font-weight: 500; font-size: 0.95rem; text-align: left;"
+                  required 
+                />
+              </div>
+              <button type="submit" class="portal-auth-btn" id="btn-cek-status-klien" style="background: #1D4ED8;">
+                Periksa Status Permohonan Saya ➔
+              </button>
+            </form>
+
+            <div id="client-lookup-error" style="display: none; background: #FEF2F2; border: 1px solid #FECACA; color: #B91C1C; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.88rem; margin-top: 1rem; line-height: 1.5;"></div>
+
+            <!-- Hasil Pencarian Klien (Hanya data klien ini saja yang ditampilkan) -->
+            <div id="client-lookup-result" style="display: none;" class="client-result-box"></div>
+
+            <div class="portal-security-notice">
+              🛡️ <strong>Kerahasiaan Klien Dijamin:</strong> Sistem menerapkan isolasi data. Anda hanya dapat melihat rincian permohonan konsultasi milik Anda sendiri tanpa mengekspos data pemohon lain.
+            </div>
+          </div>
+
+          <!-- LAYAR 1: AUTENTIKASI PIN ADVOKAT (ADMIN) -->
+          <div id="portal-auth-view" class="portal-auth-card" style="display: none;">
             <div class="portal-auth-icon">🔒</div>
             <h3 class="portal-auth-title">Autentikasi Akses Advokat</h3>
             <p class="portal-auth-desc">
-              Area khusus Advokat, Pengacara, dan Staf Kantor Hukum HTS & Partners untuk memantau formulir pendaftaran konsultasi klien dan menghubungi klien secara langsung.
+              Area khusus Advokat, Pengacara, dan Staf Kantor Hukum HTS & Partners untuk memantau formulir pendaftaran konsultasi klien dan menindaklanjuti perkara.
             </p>
             <form id="form-login-advokat" onsubmit="handleLoginAdvokat(event)">
               <input 
@@ -2788,9 +3001,9 @@
               </button>
             </form>
             <p id="portal-auth-error" style="display: none; color: #DC2626; font-size: 0.85rem; margin-top: 0.75rem; font-weight: 600;"></p>
-            <p class="portal-auth-hint">
-              🔑 <em>PIN Akses Kantor: <strong>hts2026</strong></em>
-            </p>
+            <div class="portal-security-notice">
+              🔒 <em>PIN Akses Admin Advokat dikelola secara privat oleh pengelola kantor hukum untuk melindungi kerahasiaan dan privasi data seluruh klien.</em>
+            </div>
           </div>
 
           <!-- LAYAR 2: DASHBOARD MONITORING & PENANGANAN KASUS -->
@@ -3194,35 +3407,182 @@
         }
       }
 
+      /* Tab Switcher: Mode Klien vs Mode Admin */
+      function switchPortalTab(tab) {
+        const tabClient = document.getElementById('tab-nav-client');
+        const tabAdmin = document.getElementById('tab-nav-admin');
+        const clientView = document.getElementById('portal-client-view');
+        const authView = document.getElementById('portal-auth-view');
+        const dashView = document.getElementById('portal-dashboard-view');
+
+        if (tab === 'client') {
+          if (tabClient) tabClient.classList.add('active');
+          if (tabAdmin) tabAdmin.classList.remove('active');
+          if (clientView) clientView.style.display = 'block';
+          if (authView) authView.style.display = 'none';
+          if (dashView) dashView.style.display = 'none';
+          hentikanAutoRefreshPortal();
+          const lookupInput = document.getElementById('client-lookup-input');
+          if (lookupInput) setTimeout(() => lookupInput.focus(), 100);
+        } else {
+          if (tabClient) tabClient.classList.remove('active');
+          if (tabAdmin) tabAdmin.classList.add('active');
+          if (clientView) clientView.style.display = 'none';
+          const token = sessionStorage.getItem('hts_advokat_token');
+          if (token) {
+            if (authView) authView.style.display = 'none';
+            if (dashView) dashView.style.display = 'flex';
+            muatDataKonsultasi();
+            mulaiAutoRefreshPortal();
+          } else {
+            if (authView) authView.style.display = 'block';
+            if (dashView) dashView.style.display = 'none';
+            hentikanAutoRefreshPortal();
+            const pinInput = document.getElementById('portal-pin-input');
+            if (pinInput) setTimeout(() => pinInput.focus(), 100);
+          }
+        }
+      }
+
+      function bukaPortalKlien() {
+        const modal = document.getElementById('portal-advokat-modal');
+        if (!modal) return;
+        modal.classList.add('active');
+        switchPortalTab('client');
+      }
+
       function bukaPortalAdvokat() {
         const modal = document.getElementById('portal-advokat-modal');
         if (!modal) return;
         modal.classList.add('active');
-
-        // Check if previously logged in
-        const token = sessionStorage.getItem('hts_advokat_token');
-        const authView = document.getElementById('portal-auth-view');
-        const dashView = document.getElementById('portal-dashboard-view');
-
-        if (token) {
-          if (authView) authView.style.display = 'none';
-          if (dashView) dashView.style.display = 'flex';
-          muatDataKonsultasi();
-          mulaiAutoRefreshPortal();
-        } else {
-          if (authView) authView.style.display = 'block';
-          if (dashView) dashView.style.display = 'none';
-          const pinInput = document.getElementById('portal-pin-input');
-          if (pinInput) {
-            setTimeout(() => pinInput.focus(), 150);
-          }
-        }
+        switchPortalTab('admin');
       }
 
       function tutupPortalAdvokat() {
         const modal = document.getElementById('portal-advokat-modal');
         if (modal) modal.classList.remove('active');
         hentikanAutoRefreshPortal();
+      }
+
+      async function handleCekStatusKlien(event) {
+        if (event && event.preventDefault) event.preventDefault();
+        const inputEl = document.getElementById('client-lookup-input');
+        const btnEl = document.getElementById('btn-cek-status-klien');
+        const errEl = document.getElementById('client-lookup-error');
+        const resultEl = document.getElementById('client-lookup-result');
+
+        const identifier = inputEl ? inputEl.value.trim() : '';
+        if (!identifier) return;
+
+        if (btnEl) {
+          btnEl.disabled = true;
+          btnEl.textContent = 'Memeriksa database kantor...';
+        }
+        if (errEl) errEl.style.display = 'none';
+        if (resultEl) resultEl.style.display = 'none';
+
+        try {
+          const res = await fetch('/api/klien/cek-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identifier })
+          });
+          const result = await res.json();
+
+          if (result.success && result.found && Array.isArray(result.data) && result.data.length > 0) {
+            let html = '';
+            result.data.forEach(item => {
+              const ticketCode = item.ticketId || ('HTS-' + String(item.id).padStart(4, '0'));
+              const statusRaw = item.status || 'MENUNGGU_VERIFIKASI';
+              let badgeColor = '#FEF3C7';
+              let badgeText = '#92400E';
+              let statusLabel = 'Menunggu Tanggapan Tim Advokat';
+              let statusDesc = 'Permohonan Anda telah masuk ke database kantor. Tim Advokat akan mempelajari kasus dan segera menghubungi Anda.';
+
+              if (statusRaw === 'SEDANG_DITANGANI') {
+                badgeColor = '#DBEAFE';
+                badgeText = '#1E40AF';
+                statusLabel = 'Sedang Ditangani oleh Tim Advokat';
+                statusDesc = 'Perkara Anda saat ini sedang dalam proses analisis dan penanganan aktif oleh Tim Advokat HTS & Partners.';
+              } else if (statusRaw === 'SELESAI' || statusRaw === 'KONSULTASI_SELESAI') {
+                badgeColor = '#DCFCE7';
+                badgeText = '#166534';
+                statusLabel = 'Konsultasi Selesai';
+                statusDesc = 'Konsultasi hukum dan arahan langkah hukum telah selesai diberikan oleh tim advokat.';
+              } else if (statusRaw === 'ARSIP') {
+                badgeColor = '#F1F5F9';
+                badgeText = '#475569';
+                statusLabel = 'Berkas Diarsipkan';
+                statusDesc = 'Berkas konsultasi Anda telah disimpan dalam arsip dokumentasi.';
+              }
+
+              const formattedDate = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+              }) : 'Baru saja';
+
+              html += `
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; text-align: left;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.85rem;">
+                    <div>
+                      <span class="client-ticket-badge">No. Tiket: ${escapeHtml(ticketCode)}</span>
+                      <span style="display: block; font-size: 0.82rem; color: #64748B; margin-top: 0.35rem;">📅 Diajukan: ${escapeHtml(formattedDate)}</span>
+                    </div>
+                    <span style="display: inline-block; padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 700; font-size: 0.82rem; background: ${badgeColor}; color: ${badgeText};">
+                      ${escapeHtml(statusLabel)}
+                    </span>
+                  </div>
+
+                  <div style="margin-bottom: 0.85rem;">
+                    <strong style="color: #0F172A; font-size: 1.02rem;">👤 Pemohon: ${escapeHtml(item.namaLengkap || '-')}</strong>
+                    <div style="font-size: 0.88rem; color: #475569; margin-top: 0.25rem;">⚖️ Kategori Bidang: <strong>${escapeHtml(item.kategoriPerkara || '-')}</strong></div>
+                  </div>
+
+                  <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.85rem; font-size: 0.88rem; color: #334155; line-height: 1.55; margin-bottom: 0.85rem;">
+                    <strong style="color: #0F172A; display: block; margin-bottom: 0.25rem;">Kronologi Masalah Hukum:</strong>
+                    <p style="margin: 0; white-space: pre-wrap;">${escapeHtml(item.uraianMasalah || '-')}</p>
+                  </div>
+
+                  <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 0.85rem; font-size: 0.86rem; color: #166534; line-height: 1.5; margin-bottom: 0.85rem;">
+                    <strong>Status Terkini:</strong> ${escapeHtml(statusDesc)}
+                  </div>
+
+                  ${item.catatanAdvokat ? `
+                    <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.85rem; font-size: 0.86rem; color: #92400E; line-height: 1.5; margin-bottom: 0.85rem;">
+                      <strong style="display: block; margin-bottom: 0.25rem;">Arahan / Catatan Tim Advokat:</strong>
+                      <p style="margin: 0;">${escapeHtml(item.catatanAdvokat)}</p>
+                    </div>
+                  ` : ''}
+
+                  <div style="margin-top: 1rem;">
+                    <a href="https://wa.me/6287773115795?text=Halo%20Advokat%20HTS%2C%20saya%20klien%20dengan%20Tiket%20${encodeURIComponent(ticketCode)}%20(${encodeURIComponent(item.namaLengkap || '')})%20ingin%20menanyakan%20perkembangan%20permohonan%20saya" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; background: #22C55E; color: #FFFFFF; text-decoration: none; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
+                      💬 Hubungi Advokat via WhatsApp Mengenai Tiket Ini ➔
+                    </a>
+                  </div>
+                </div>
+              `;
+            });
+
+            if (resultEl) {
+              resultEl.innerHTML = html;
+              resultEl.style.display = 'block';
+            }
+          } else {
+            if (errEl) {
+              errEl.textContent = 'Permohonan dengan nomor kontak atau tiket tersebut tidak ditemukan. Mohon pastikan nomor yang dimasukkan sama persis dengan saat Anda mengisi formulir konsultasi.';
+              errEl.style.display = 'block';
+            }
+          }
+        } catch (e) {
+          if (errEl) {
+            errEl.textContent = 'Gagal memeriksa status ke server. Silakan coba sesaat lagi.';
+            errEl.style.display = 'block';
+          }
+        } finally {
+          if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.textContent = 'Periksa Status Permohonan Saya ➔';
+          }
+        }
       }
 
       async function handleLoginAdvokat(event) {
@@ -3312,7 +3672,7 @@
       }
 
       async function muatDataKonsultasi(manual = false) {
-        const pin = sessionStorage.getItem('hts_advokat_pin') || 'hts2026';
+        const pin = sessionStorage.getItem('hts_advokat_pin') || '';
         try {
           const res = await fetch(`/api/advokat/konsultasi?pin=${encodeURIComponent(pin)}`, {
             headers: { 'x-advokat-pin': pin }
@@ -3535,7 +3895,7 @@
       }
 
       async function updateStatusPerkara(id, status) {
-        const pin = sessionStorage.getItem('hts_advokat_pin') || 'hts2026';
+        const pin = sessionStorage.getItem('hts_advokat_pin') || '';
         try {
           const res = await fetch(`/api/advokat/konsultasi/${id}`, {
             method: 'PATCH',
@@ -3561,7 +3921,7 @@
         const newNote = prompt('Masukkan Catatan Telaah Tim Advokat:', currentNote || '');
         if (newNote === null) return;
 
-        const pin = sessionStorage.getItem('hts_advokat_pin') || 'hts2026';
+        const pin = sessionStorage.getItem('hts_advokat_pin') || '';
         const item = portalConsultationsData.find(d => d.id === id);
         const status = item ? item.status : 'SEDANG_DITANGANI';
 
@@ -3586,7 +3946,7 @@
 
       async function hapusDataKonsultasi(id) {
         if (!confirm('Apakah Anda yakin ingin menghapus data permohonan konsultasi ini dari database?')) return;
-        const pin = sessionStorage.getItem('hts_advokat_pin') || 'hts2026';
+        const pin = sessionStorage.getItem('hts_advokat_pin') || '';
         try {
           const res = await fetch(`/api/advokat/konsultasi/${id}`, {
             method: 'DELETE',

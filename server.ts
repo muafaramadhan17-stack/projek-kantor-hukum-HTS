@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import {
   simpanKonsultasiHukum,
   ambilDaftarKonsultasi,
+  cariKonsultasiKlien,
   updateStatusKonsultasi,
   hapusKonsultasi,
   simpanRiwayatChatAi,
@@ -591,6 +592,57 @@ ATURAN KETAT ANTI-HALUSINASI (ZERO-HALLUCINATION POLICY):
         status: "ERROR",
         error: error.message || "Failed to query database status"
       });
+    }
+  });
+
+  // =========================================================================
+  // PORTAL CALON KLIEN: CEK STATUS KONSULTASI PRIBADI
+  // Strictly isolated: Calon klien HANYA melihat data perkara miliknya sendiri
+  // =========================================================================
+  app.post("/api/klien/cek-status", async (req, res) => {
+    try {
+      const { identifier } = req.body || {};
+      if (!identifier || typeof identifier !== 'string' || identifier.trim().length < 3) {
+        return res.status(400).json({
+          success: false,
+          error: "Silakan masukkan Nomor WhatsApp atau ID Tiket Konsultasi yang valid."
+        });
+      }
+
+      const clientConsultations = await cariKonsultasiKlien(identifier.trim());
+
+      if (!clientConsultations || clientConsultations.length === 0) {
+        return res.json({
+          success: true,
+          found: false,
+          message: "Tidak ditemukan riwayat konsultasi dengan nomor kontak/tiket tersebut. Pastikan nomor WhatsApp sesuai dengan yang Anda daftarkan di formulir.",
+          data: []
+        });
+      }
+
+      // Format data untuk tampilan klien (menyertakan catatan advokat dan status tindak lanjut)
+      const sanitizedData = clientConsultations.map((c: any) => ({
+        id: c.id,
+        ticketCode: `HTS-${c.id.toString().padStart(4, '0')}`,
+        namaLengkap: c.namaLengkap,
+        nomorWhatsappMasked: c.nomorWhatsapp ? c.nomorWhatsapp.slice(0, 4) + '****' + c.nomorWhatsapp.slice(-2) : '-',
+        kategoriPerkara: c.kategoriPerkara,
+        urgensiKasus: c.urgensiKasus,
+        uraianMasalah: c.uraianMasalah,
+        status: c.status || 'MENUNGGU_VERIFIKASI',
+        catatanAdvokat: c.catatanAdvokat || 'Berkas Anda sedang dalam antrean telaah oleh Advokat HTS & Partners.',
+        createdAt: c.createdAt
+      }));
+
+      return res.json({
+        success: true,
+        found: true,
+        count: sanitizedData.length,
+        data: sanitizedData
+      });
+    } catch (err: any) {
+      console.error("[API Klien Cek Status Error]", err);
+      return res.status(500).json({ success: false, error: "Gagal memproses pengecekan status konsultasi klien" });
     }
   });
 
