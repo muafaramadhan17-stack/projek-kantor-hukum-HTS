@@ -334,63 +334,84 @@ ATURAN KETAT ANTI-HALUSINASI (ZERO-HALLUCINATION POLICY):
         }));
 
       let responseText = "";
-      try {
-        const response = await ai.models.generateContent({
-          model: "gemini-3.8-flash",
-          contents: formattedContents.length > 0 ? formattedContents : [{ role: 'user', parts: [{ text: messageText }] }],
-          config: {
-            systemInstruction: systemPrompt,
-            temperature: 0.1, // Temperatur rendah untuk kepastian faktual & anti-halusinasi
-            topP: 0.8
+      
+      if (!apiKey) {
+        console.warn("[Chat AI Error]: GEMINI_API_KEY environment variable is not defined.");
+        responseText = "Layanan analisis AI memerlukan konfigurasi **GEMINI_API_KEY** di environment variables hosting (misalnya di Vercel Dashboard > Project Settings > Environment Variables).\n\nUntuk konsultasi hukum langsung dan telaah berkas perkara tanpa kendala, silakan hubungi Tim Advokat Kantor Hukum HTS & Partners langsung via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).";
+      } else {
+        const candidateModels = ["gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.8-flash"];
+        let lastGeminiErr: any = null;
+        let modelSuccess = false;
+
+        for (const modelName of candidateModels) {
+          try {
+            const response = await ai.models.generateContent({
+              model: modelName,
+              contents: formattedContents.length > 0 ? formattedContents : [{ role: 'user', parts: [{ text: messageText }] }],
+              config: {
+                systemInstruction: systemPrompt,
+                temperature: 0.2,
+                topP: 0.85
+              }
+            });
+
+            if (response && response.text) {
+              responseText = response.text;
+              modelSuccess = true;
+              break;
+            }
+          } catch (geminiErr: any) {
+            console.warn(`[Gemini Model ${modelName} Error]:`, geminiErr?.status || geminiErr?.message || geminiErr);
+            lastGeminiErr = geminiErr;
           }
-        });
-        
-        responseText = response.text || "Terima kasih atas pertanyaan Anda. Untuk konsultasi lebih lanjut mengenai permasalahan hukum Anda, silakan hubungi Kantor Hukum HTS & Partners di WhatsApp 0877-7311-5795.\n\n*Catatan: Informasi ini bersifat umum dan bukan pengganti konsultasi hukum resmi dengan pengacara.*";
-      } catch (geminiErr: any) {
-        console.warn("Gemini API call fallback engaged:", geminiErr?.message || geminiErr);
-        
-        // Factual Grounded Legal Fallback (Anti-halu jika API offline/lokal)
-        const q = messageText.toLowerCase();
-        if (q.includes('biaya') || q.includes('tarif') || q.includes('harga') || q.includes('bayar') || q.includes('ongkos')) {
-          responseText = "Mengenai **biaya dan honorarium penanganan perkara** di Kantor Hukum HTS & Partners:\n\n" +
-            "1. **Prinsip Transparansi:** Biaya ditentukan secara wajar dan profesional berdasarkan tingkat kompleksitas perkara, urgensi penanganan, serta tahapan hukum yang ditempuh (litigasi maupun non-litigasi).\n" +
-            "2. **Telaah Berkas Awal:** Kami menyarankan klien untuk berkonsultasi awal dan membawa dokumen perkara agar tim advokat kami dapat memberikan estimasi rincian biaya yang pasti tanpa biaya tersembunyi.\n\n" +
-            "Silakan hubungi Tim Advokat HTS & Partners langsung melalui [WhatsApp 0877-7311-5795](https://wa.me/6287773115795) untuk konsultasi awal.\n\n" +
-            "*Catatan: Informasi ini merupakan panduan umum dan bukan penawaran tarif final.*";
-        } else if (q.includes('pidana') || q.includes('kriminal') || q.includes('kejahatan') || q.includes('polisi') || q.includes('tersangka') || q.includes('bap') || q.includes('korban')) {
-          responseText = "Kantor Hukum HTS & Partners menyediakan pendampingan profesional untuk **Perkara Pidana**:\n\n" +
-            "• **Tahap Kepolisian:** Pendampingan hak-hak saksi, korban, maupun tersangka saat pemeriksaan Berita Acara Pemeriksaan (BAP) guna memastikan proses hukum berjalan sesuai KUHAP tanpa tekanan.\n" +
-            "• **Tahap Kejaksaan & Pengadilan:** Penyusunan nota keberatan (eksepsi), pengajuan bukti & saksi meringankan, serta nota pembelaan (pledoi) di Pengadilan Negeri.\n\n" +
-            "⚖️ *Penting:* Berdasarkan Kode Etik Advokat Indonesia, advokat tidak diperkenankan menjanjikan jaminan bebas atau kemenangan mutlak. Pembelaan difokuskan pada perlindungan hak hukum dan keadilan terbaik bagi klien.\n\n" +
-            "Konsultasikan perkara pidana Anda via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).";
-        } else if (q.includes('tanah') || q.includes('sertifikat') || q.includes('sengketa') || q.includes('waris') || q.includes('cerai') || q.includes('gono') || q.includes('wanprestasi') || q.includes('perdata') || q.includes('somasi')) {
-          responseText = "Kantor Hukum HTS & Partners melayani penanganan **Perkara Perdata** secara komprehensif:\n\n" +
-            "• **Sengketa Pertanahan:** Penanganan kasus klaim kepemilikan, sertifikat ganda/tumpang tindih, dan sengketa batas tanah melalui mediasi BPN hingga gugatan PMH di Pengadilan Negeri.\n" +
-            "• **Hukum Waris & Keluarga:** Penyelesaian penetapan ahli waris, pembagian harta peninggalan, gugat perceraian, hak asuh anak, dan harta bersama (gono-gini).\n" +
-            "• **Perikatan Kontrak:** Pengiriman somasi resmi, mediasi perdamaian, serta gugatan Wanprestasi atas perjanjian kerja sama yang dilanggar.\n\n" +
-            "Setiap perkara perdata memerlukan penelaahan bukti otentik. Silakan kirimkan berkas atau konsultasikan melalui [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).\n\n" +
-            "*Catatan: Informasi ini bersifat edukatif awal.*";
-        } else if (q.includes('phk') || q.includes('pesangon') || q.includes('tun') || q.includes('pekerja') || q.includes('buruh') || q.includes('disnaker') || q.includes('industrial')) {
-          responseText = "Untuk **Perkara Ketenagakerjaan & Tata Usaha Negara (TUN)**:\n\n" +
-            "• **Sengketa Hubungan Industrial (PHI):** Kami mendampingi pekerja/buruh atas tindakan PHK sepihak, tuntutan hak uang pesangon, uang penghargaan masa kerja, dan kompensasi sesuai regulasi ketenagakerjaan.\n" +
-            "• **Alur Prosedur:** Dimulai dari Perundingan Bipartit (musyawarah kedua pihak), Mediasi Tripartit di Disnaker, hingga gugatan di Pengadilan Hubungan Industrial.\n" +
-            "• **Gugatan Sengketa TUN:** Pengajuan gugatan pembatalan Surat Keputusan (SK) Pejabat Tata Usaha Negara yang melanggar hukum di PTUN.\n\n" +
-            "Konsultasikan bukti SK atau kronologi kerja Anda via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).";
-        } else if (q.includes('alamat') || q.includes('kantor') || q.includes('lokasi') || q.includes('kontak') || q.includes('nomor') || q.includes('jam')) {
-          responseText = "Berikut informasi resmi **Kantor Hukum HTS & Partners**:\n\n" +
-            "📍 **Alamat Kantor:** Jl. Raya Puri Anggrek Blok B14 No. 4, Kel. Kalodran, Kec. Walantaka, Kota Serang, Banten 42183\n" +
-            "📱 **WhatsApp Konsultasi:** [0877-7311-5795](https://wa.me/6287773115795)\n" +
-            "⚖️ **Afiliasi Advokat:** PERADI (Perhimpunan Advokat Indonesia)\n" +
-            "📷 **Instagram:** @kantorhukum_hts\n\n" +
-            "Kami melayani konsultasi daring melalui WhatsApp maupun konsultasi tatap muka langsung di kantor dengan membuat jadwal terlebih dahulu.";
-        } else {
-          responseText = "Terima kasih telah menghubungi Asisten Virtual Resmi **Kantor Hukum HTS & Partners**.\n\n" +
-            "Kami adalah firma advokat dan konsultan hukum berlisensi PERADI yang siap mendampingi Anda dalam:\n" +
-            "1. **Perkara Pidana** (Penyelidikan Kepolisian, Kejaksaan, hingga Sidang Pengadilan)\n" +
-            "2. **Perkara Perdata** (Sengketa Tanah, Gugat Waris, Perceraian, Somasi, dan Wanprestasi)\n" +
-            "3. **Perkara TUN & Ketenagakerjaan** (Advokasi PHK sepihak, Pesangon, dan Gugatan PTUN)\n\n" +
-            "Untuk telaah kasus hukum yang akurat dan terpercaya, silakan hubungi Tim Advokat kami via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795) atau isi formulir konsultasi di halaman ini.\n\n" +
-            "*Catatan: Informasi ini bersifat edukasi hukum awal dan bukan nasihat hukum mengikat.*";
+        }
+
+        if (!modelSuccess) {
+          console.warn("All Gemini candidate models failed, engaging contextual legal fallback:", lastGeminiErr?.message || lastGeminiErr);
+          
+          // Factual Grounded Legal Fallback (Anti-halu jika API offline/lokal)
+          const q = messageText.toLowerCase();
+          if (q.includes('biaya') || q.includes('tarif') || q.includes('harga') || q.includes('bayar') || q.includes('ongkos')) {
+            responseText = "Mengenai **biaya dan honorarium penanganan perkara** di Kantor Hukum HTS & Partners:\n\n" +
+              "1. **Prinsip Transparansi:** Biaya ditentukan secara wajar dan profesional berdasarkan tingkat kompleksitas perkara, urgensi penanganan, serta tahapan hukum yang ditempuh (litigasi maupun non-litigasi).\n" +
+              "2. **Telaah Berkas Awal:** Kami menyarankan klien untuk berkonsultasi awal dan membawa dokumen perkara agar tim advokat kami dapat memberikan estimasi rincian biaya yang pasti tanpa biaya tersembunyi.\n\n" +
+              "Silakan hubungi Tim Advokat HTS & Partners langsung melalui [WhatsApp 0877-7311-5795](https://wa.me/6287773115795) untuk konsultasi awal.\n\n" +
+              "*Catatan: Informasi ini merupakan panduan umum dan bukan penawaran tarif final.*";
+          } else if (q.includes('pidana') || q.includes('kriminal') || q.includes('kejahatan') || q.includes('polisi') || q.includes('tersangka') || q.includes('bap') || q.includes('korban')) {
+            responseText = "Kantor Hukum HTS & Partners menyediakan pendampingan profesional untuk **Perkara Pidana**:\n\n" +
+              "• **Tahap Kepolisian:** Pendampingan hak-hak saksi, korban, maupun tersangka saat pemeriksaan Berita Acara Pemeriksaan (BAP) guna memastikan proses hukum berjalan sesuai KUHAP tanpa tekanan.\n" +
+              "• **Tahap Kejaksaan & Pengadilan:** Penyusunan nota keberatan (eksepsi), pengajuan bukti & saksi meringankan, serta nota pembelaan (pledoi) di Pengadilan Negeri.\n\n" +
+              "⚖️ *Penting:* Berdasarkan Kode Etik Advokat Indonesia, advokat tidak diperkenankan menjanjikan jaminan bebas atau kemenangan mutlak. Pembelaan difokuskan pada perlindungan hak hukum dan keadilan terbaik bagi klien.\n\n" +
+              "Konsultasikan perkara pidana Anda via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).";
+          } else if (q.includes('tanah') || q.includes('sertifikat') || q.includes('sengketa') || q.includes('waris') || q.includes('cerai') || q.includes('gono') || q.includes('wanprestasi') || q.includes('perdata') || q.includes('somasi')) {
+            responseText = "Kantor Hukum HTS & Partners melayani penanganan **Perkara Perdata** secara komprehensif:\n\n" +
+              "• **Sengketa Pertanahan:** Penanganan kasus klaim kepemilikan, sertifikat ganda/tumpang tindih, dan sengketa batas tanah melalui mediasi BPN hingga gugatan PMH di Pengadilan Negeri.\n" +
+              "• **Hukum Waris & Keluarga:** Penyelesaian penetapan ahli waris, pembagian harta peninggalan, gugat perceraian, hak asuh anak, dan harta bersama (gono-gini).\n" +
+              "• **Perikatan Kontrak:** Pengiriman somasi resmi, mediasi perdamaian, serta gugatan Wanprestasi atas perjanjian kerja sama yang dilanggar.\n\n" +
+              "Setiap perkara perdata memerlukan penelaahan bukti otentik. Silakan kirimkan berkas atau konsultasikan melalui [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).\n\n" +
+              "*Catatan: Informasi ini bersifat edukatif awal.*";
+          } else if (q.includes('phk') || q.includes('pesangon') || q.includes('tun') || q.includes('pekerja') || q.includes('buruh') || q.includes('disnaker') || q.includes('industrial')) {
+            responseText = "Untuk **Perkara Ketenagakerjaan & Tata Usaha Negara (TUN)**:\n\n" +
+              "• **Sengketa Hubungan Industrial (PHI):** Kami mendampingi pekerja/buruh atas tindakan PHK sepihak, tuntutan hak uang pesangon, uang penghargaan masa kerja, dan kompensasi sesuai regulasi ketenagakerjaan.\n" +
+              "• **Alur Prosedur:** Dimulai dari Perundingan Bipartit (musyawarah kedua pihak), Mediasi Tripartit di Disnaker, hingga gugatan di Pengadilan Hubungan Industrial.\n" +
+              "• **Gugatan Sengketa TUN:** Pengajuan gugatan pembatalan Surat Keputusan (SK) Pejabat Tata Usaha Negara yang melanggar hukum di PTUN.\n\n" +
+              "Konsultasikan bukti SK atau kronologi kerja Anda via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795).";
+          } else if (q.includes('alamat') || q.includes('kantor') || q.includes('lokasi') || q.includes('kontak') || q.includes('nomor') || q.includes('jam')) {
+            responseText = "Berikut informasi resmi **Kantor Hukum HTS & Partners**:\n\n" +
+              "📍 **Alamat Kantor:** Jl. Raya Puri Anggrek Blok B14 No. 4, Kel. Kalodran, Kec. Walantaka, Kota Serang, Banten 42183\n" +
+              "📱 **WhatsApp Konsultasi:** [0877-7311-5795](https://wa.me/6287773115795)\n" +
+              "⚖️ **Afiliasi Advokat:** PERADI (Perhimpunan Advokat Indonesia)\n" +
+              "📷 **Instagram:** @kantorhukum_hts\n\n" +
+              "Kami melayani konsultasi daring melalui WhatsApp maupun konsultasi tatap muka langsung di kantor dengan membuat jadwal terlebih dahulu.";
+          } else {
+            responseText = "Terima kasih telah menghubungi Asisten Virtual Resmi **Kantor Hukum HTS & Partners**.\n\n" +
+              "Kami adalah firma advokat dan konsultan hukum berlisensi PERADI yang siap mendampingi Anda dalam:\n" +
+              "1. **Perkara Pidana** (Penyelidikan Kepolisian, Kejaksaan, hingga Sidang Pengadilan)\n" +
+              "2. **Perkara Perdata** (Sengketa Tanah, Gugat Waris, Perceraian, Somasi, dan Wanprestasi)\n" +
+              "3. **Perkara TUN & Ketenagakerjaan** (Advokasi PHK sepihak, Pesangon, dan Gugatan PTUN)\n\n" +
+              "Untuk telaah kasus hukum yang akurat dan terpercaya, silakan hubungi Tim Advokat kami via [WhatsApp 0877-7311-5795](https://wa.me/6287773115795) atau isi formulir konsultasi di halaman ini.\n\n" +
+              "*Catatan: Informasi ini bersifat edukasi hukum awal dan bukan nasihat hukum mengikat.*";
+          }
         }
       }
 
