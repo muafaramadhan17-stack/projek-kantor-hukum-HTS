@@ -1,0 +1,6 @@
+{
+  "name": "HTS & Partners",
+  "description": "Dashboard resmi Kantor Hukum HTS & Partners - Advokat, Pengacara & Konsultan Hukum umum berlisensi PERADI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
