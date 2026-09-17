@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageSquare, X, Send, Scale, Loader2, PhoneCall, AlertCircle } from 'lucide-react';
 
-/**
- * DevSecOps Structured Logging Interface & Utility
- * Outputs machine-parsable JSON logs to console for telemetry, performance, and security audits
- */
 export interface DevSecOpsLogPayload {
   timestamp: string;
   eventType: 'API_ERROR' | 'WEBSOCKET_ERROR' | 'UNHANDLED_REJECTION' | 'NETWORK_LATENCY' | 'CONSULTATION_SUBMISSION';
@@ -39,14 +35,9 @@ export const logDevSecOpsError = (payload: Omit<DevSecOpsLogPayload, 'timestamp'
     service: 'HTS-Frontend-Client',
     ...payload,
   };
-  // Log strictly formatted JSON for DevSecOps log collectors (e.g., Datadog, CloudWatch, GCP Logging)
   console.error(`[DevSecOps Telemetry Audit] ${JSON.stringify(structuredLog)}`);
 };
 
-/**
- * DevSecOps Middleware Logger for Consultation Form Submissions
- * Logs structured JSON to console for audit trail, security monitoring, and incident analytics.
- */
 export const logDevSecOpsConsultation = (payload: Omit<DevSecOpsConsultationLog, 'timestamp' | 'service'>) => {
   const structuredLog: DevSecOpsConsultationLog = {
     timestamp: new Date().toISOString(),
@@ -127,7 +118,6 @@ export default function App() {
   
   const MAX_MESSAGES = 5;
 
-  // Keep refs in sync with state
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
@@ -146,7 +136,6 @@ export default function App() {
     }
   }, [messages, isOpen]);
 
-  // DevSecOps telemetry listener for global unhandled errors and WebSocket issues
   useEffect(() => {
     const handleRejection = (event: PromiseRejectionEvent) => {
       const reason = event.reason;
@@ -174,17 +163,12 @@ export default function App() {
     };
   }, []);
 
-  // Helper to mask PII for DevSecOps compliant telemetry
   const maskPII = (val: string): string => {
     if (!val) return '';
     if (val.length <= 4) return '***';
     return val.slice(0, 2) + '***' + val.slice(-2);
   };
 
-  /**
-   * Middleware handler untuk form submission konsultasi hukum (#consultation-form)
-   * Menyediakan logging JSON terstruktur untuk observabilitas DevSecOps dan auditing telemetri.
-   */
   const handleConsultationSubmit = useCallback(async (event: Event | React.FormEvent) => {
     if (event && event.preventDefault) {
       event.preventDefault();
@@ -212,7 +196,6 @@ export default function App() {
     const maskedContact = maskPII(formData.contact);
     const startTime = performance.now();
 
-    // 1. DevSecOps Logging: Log Attempt
     logDevSecOpsConsultation({
       eventType: 'CONSULTATION_SUBMIT_ATTEMPT',
       endpoint: '/api/consultation',
@@ -244,7 +227,6 @@ export default function App() {
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
-        // 2. DevSecOps Logging: Log Success
         logDevSecOpsConsultation({
           eventType: 'CONSULTATION_SUBMIT_SUCCESS',
           endpoint: '/api/consultation',
@@ -261,7 +243,6 @@ export default function App() {
           }
         });
 
-        // Update UI Display
         const formEl = document.getElementById('consultation-form');
         const successBox = document.getElementById('consult-success-box');
         const ticketDisplay = document.getElementById('consult-ticket-display');
@@ -286,7 +267,6 @@ export default function App() {
         }
       } else {
         const errorText = result.message || `HTTP ${response.status}: Failed to submit consultation ticket`;
-        // 3. DevSecOps Logging: Log Non-200 / Failure
         logDevSecOpsConsultation({
           eventType: 'CONSULTATION_SUBMIT_FAILURE',
           endpoint: '/api/consultation',
@@ -313,7 +293,6 @@ export default function App() {
       const fallbackTicket = 'HTS-' + Date.now().toString().slice(-4);
       const errorMsg = err?.message || String(err);
 
-      // 4. DevSecOps Logging: Log Catch Error & Fallback Triggered
       logDevSecOpsConsultation({
         eventType: 'CONSULTATION_SUBMIT_FALLBACK',
         endpoint: '/api/consultation',
@@ -355,7 +334,6 @@ export default function App() {
     }
   }, []);
 
-  // Listen to clicks on any floating button / triggers & bind consultation form in index.html
   useEffect(() => {
     const handleToggleChat = (e: Event) => {
       e.preventDefault();
@@ -375,13 +353,11 @@ export default function App() {
       setIsOpen(false);
     };
 
-    // Attach click listeners to all possible triggers in the DOM
     const fabBtn = document.getElementById('fab-chatbot');
     if (fabBtn) {
       fabBtn.addEventListener('click', handleToggleChat);
     }
 
-    // Expose handleConsultationSubmit globally for window & form attachments
     (window as any).handleConsultationSubmit = handleConsultationSubmit;
 
     const consultForm = document.getElementById('consultation-form');
@@ -399,12 +375,7 @@ export default function App() {
     };
   }, [handleConsultationSubmit]);
 
-  /**
-   * Fungsi triggerAIResponse untuk mengirim permintaan ke API dengan delay natural
-   * serta mencatat telemetri performa DevSecOps dan menangani kegagalan API secara graceful.
-   */
   const triggerAIResponse = async (queryText: string, currentHistory: Message[]) => {
-    // 1. Simulasi ritme mengetik natural
     await new Promise((resolve) => setTimeout(resolve, 550));
 
     const startTime = performance.now();
@@ -455,7 +426,6 @@ export default function App() {
     } catch (error: any) {
       const latencyMs = Math.round(performance.now() - startTime);
       
-      // Catat ke Structured JSON Logger untuk DevSecOps Audit
       logDevSecOpsError({
         eventType: 'API_ERROR',
         endpoint: '/api/chat',
@@ -468,7 +438,6 @@ export default function App() {
         }
       });
 
-      // Graceful error handling dengan tautan WhatsApp darurat / konsultasi langsung
       const errorMessage: Message = {
         id: `err-${Date.now()}`,
         sender: 'assistant',
@@ -481,9 +450,6 @@ export default function App() {
     }
   };
 
-  /**
-   * Pemrosesan antrean pesan (Message Queue Processing)
-   */
   const processQueue = async () => {
     if (isProcessingRef.current || queueRef.current.length === 0) {
       return;
@@ -509,12 +475,10 @@ export default function App() {
       timestamp: new Date()
     };
 
-    // Tambahkan pesan user ke UI
     const updatedHistory = [...messagesRef.current, userMessage];
     setMessages(updatedHistory);
     messagesRef.current = updatedHistory;
 
-    // Tingkatkan counter pesan
     const nextCount = messageCountRef.current + 1;
     setMessageCount(nextCount);
     messageCountRef.current = nextCount;
@@ -527,16 +491,12 @@ export default function App() {
       setIsLoading(false);
       isProcessingRef.current = false;
       
-      // Jika masih ada antrean pesan dan belum mencapai batas kuota
       if (queueRef.current.length > 0 && messageCountRef.current < MAX_MESSAGES) {
         setTimeout(processQueue, 250);
       }
     }
   };
 
-  /**
-   * Menambahkan pesan ke dalam antrean (Enqueue Query)
-   */
   const enqueueQuery = (queryText: string) => {
     if (!queryText.trim()) return;
     if (messageCountRef.current >= MAX_MESSAGES) return;
@@ -560,537 +520,55 @@ export default function App() {
 
   return (
     <>
-      {/* SCOPED STYLES TO PREVENT TAILWIND PREFLIGHT RESET COLLISION */}
-      <style>{`
-        .hts-chat-container {
-          position: fixed;
-          bottom: 110px;
-          right: 28px;
-          width: 385px;
-          height: 530px;
-          max-width: calc(100vw - 32px);
-          max-height: calc(100vh - 140px);
-          background-color: #FFFFFF;
-          border-radius: 12px;
-          box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-          border: 1px solid #E2E8F0;
-          display: flex;
-          flex-direction: column;
-          z-index: 99999;
-          overflow: hidden;
-          font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
-          animation: htsChatFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes htsChatFadeIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* FLOATING ACTION BUTTONS (DIRECT REACT INTERACTION) */
-        .hts-fab-group {
-          position: fixed;
-          bottom: 28px;
-          right: 28px;
-          z-index: 99998;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 12px;
-          pointer-events: auto;
-        }
-        .hts-fab-wa {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.65rem;
-          background: #16A34A;
-          color: #FFFFFF !important;
-          padding: 0.7rem 1.25rem;
-          border-radius: 9999px;
-          border: 1px solid #15803D;
-          box-shadow: 0 4px 14px 0 rgba(15, 23, 42, 0.08);
-          text-decoration: none !important;
-          font-weight: 600;
-          font-size: 0.88rem;
-          line-height: 1;
-          transition: transform 0.2s ease, background-color 0.2s ease;
-          white-space: nowrap;
-          user-select: none;
-          cursor: pointer;
-        }
-        .hts-fab-wa:hover {
-          background: #15803D;
-          transform: translateY(-2px);
-        }
-        .hts-fab-wa-icon {
-          width: 18px;
-          height: 18px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        .hts-fab-ai {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.65rem;
-          background: #0F172A;
-          color: #FFFFFF !important;
-          padding: 0.7rem 1.25rem;
-          border-radius: 9999px;
-          border: 1px solid #0F172A;
-          box-shadow: 0 4px 14px 0 rgba(15, 23, 42, 0.08);
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 0.88rem;
-          line-height: 1;
-          transition: transform 0.2s ease, background-color 0.2s ease;
-          white-space: nowrap;
-          user-select: none;
-          position: relative;
-        }
-        .hts-fab-ai:hover {
-          background: #1E293B;
-          transform: translateY(-2px);
-        }
-        .hts-fab-ai-active {
-          background: #0F172A !important;
-          border-color: #0F172A !important;
-        }
-        .hts-fab-ai-badge {
-          background: #F1F5F9;
-          color: #0F172A;
-          font-size: 0.68rem;
-          font-weight: 700;
-          padding: 0.15rem 0.45rem;
-          border-radius: 9999px;
-          letter-spacing: 0.04em;
-        }
-        .hts-fab-ai-dot {
-          width: 7px;
-          height: 7px;
-          background: #22C55E;
-          border-radius: 50%;
-        }
-
-        .hts-chat-header {
-          background-color: #0F172A;
-          color: #FFFFFF;
-          padding: 0.9rem 1.2rem;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border-bottom: 1px solid #1E293B;
-        }
-        .hts-chat-brand {
-          display: flex;
-          align-items: center;
-          gap: 0.65rem;
-        }
-        .hts-chat-brand-img {
-          width: 30px;
-          height: 30px;
-          border-radius: 6px;
-          object-fit: contain;
-          background-color: #FFFFFF;
-          padding: 2px;
-          border: 1px solid #334155;
-        }
-        .hts-chat-brand-title {
-          font-size: 0.92rem;
-          font-weight: 700;
-          color: #FFFFFF;
-          letter-spacing: -0.01em;
-        }
-        .hts-chat-brand-subtitle {
-          font-size: 0.7rem;
-          color: #94A3B8;
-          display: block;
-          line-height: 1.2;
-        }
-        .hts-chat-close-btn {
-          color: #94A3B8;
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          transition: color 0.2s;
-          padding: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 4px;
-        }
-        .hts-chat-close-btn:hover {
-          color: #FFFFFF;
-        }
-        .hts-chat-disclaimer {
-          background-color: #F8FAFC;
-          border-bottom: 1px solid #E2E8F0;
-          padding: 0.6rem 1rem;
-          display: flex;
-          align-items: flex-start;
-          gap: 0.5rem;
-        }
-        .hts-chat-disclaimer-text {
-          font-size: 0.72rem;
-          color: #475569;
-          line-height: 1.45;
-          font-weight: 400;
-        }
-        .hts-chat-disclaimer-icon {
-          color: #64748B;
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-        .hts-chat-messages {
-          flex: 1;
-          overflow-y: auto;
-          padding: 1.25rem;
-          display: flex;
-          flex-direction: column;
-          gap: 0.85rem;
-          background-color: #F8FAFC;
-        }
-        .hts-msg-bubble {
-          max-width: 84%;
-          padding: 0.75rem 0.95rem;
-          border-radius: 8px;
-          font-size: 0.84rem;
-          line-height: 1.55;
-          word-wrap: break-word;
-          box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-        }
-        .hts-msg-assistant {
-          align-self: flex-start;
-          background-color: #FFFFFF;
-          color: #0F172A;
-          border: 1px solid #E2E8F0;
-        }
-        .hts-msg-user {
-          align-self: flex-end;
-          background-color: #0F172A;
-          color: #FFFFFF;
-          border: 1px solid #0F172A;
-        }
-        .hts-chat-input-area {
-          border-top: 1px solid #E2E8F0;
-          padding: 0.8rem 1rem;
-          background-color: #FFFFFF;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        .hts-chat-form {
-          display: flex;
-          gap: 0.5rem;
-          align-items: center;
-        }
-        .hts-chat-input {
-          flex: 1;
-          border: 1px solid #E2E8F0;
-          border-radius: 8px;
-          padding: 0.65rem 0.85rem;
-          font-size: 0.84rem;
-          font-family: inherit;
-          color: #0F172A;
-          outline: none;
-          background-color: #FFFFFF;
-          transition: border-color 0.2s;
-        }
-        .hts-chat-input:focus {
-          border-color: #0F172A;
-          outline: 2px solid rgba(15, 23, 42, 0.08);
-        }
-        .hts-chat-input:disabled {
-          background-color: #F1F5F9;
-          color: #94A3B8;
-          border-color: #E2E8F0;
-          cursor: not-allowed;
-        }
-        .hts-chat-submit {
-          background-color: #0F172A;
-          color: #FFFFFF;
-          border: none;
-          border-radius: 8px;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-        .hts-chat-submit:hover:not(:disabled) {
-          background-color: #1E293B;
-        }
-        .hts-chat-submit:disabled {
-          background-color: #CBD5E1;
-          color: #94A3B8;
-          cursor: not-allowed;
-        }
-        .hts-rate-limit-warning {
-          background-color: #FEF2F2;
-          border: 1px solid #FECACA;
-          border-radius: 6px;
-          padding: 0.5rem 0.75rem;
-          font-size: 0.72rem;
-          color: #991B1B;
-          line-height: 1.4;
-          text-align: center;
-          font-weight: 500;
-        }
-        .hts-quick-replies-area {
-          padding: 0.5rem 0.85rem;
-          background-color: #F8FAFC;
-          border-top: 1px solid #E2E8F0;
-          display: flex;
-          flex-direction: column;
-          gap: 0.35rem;
-        }
-        .hts-quick-replies-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .hts-quick-replies-title {
-          font-size: 0.65rem;
-          font-weight: 600;
-          color: #64748B;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-        }
-        .hts-quick-replies-list {
-          display: flex;
-          gap: 0.4rem;
-          overflow-x: auto;
-          padding-bottom: 2px;
-          scrollbar-width: thin;
-        }
-        .hts-quick-replies-list::-webkit-scrollbar {
-          height: 3px;
-        }
-        .hts-quick-replies-list::-webkit-scrollbar-thumb {
-          background-color: #CBD5E1;
-          border-radius: 3px;
-        }
-        .hts-quick-chip {
-          background-color: #FFFFFF;
-          color: #0F172A;
-          border: 1px solid #E2E8F0;
-          border-radius: 9999px;
-          padding: 0.3rem 0.7rem;
-          font-size: 0.74rem;
-          font-weight: 500;
-          cursor: pointer;
-          white-space: nowrap;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.3rem;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          flex-shrink: 0;
-        }
-        .hts-quick-chip:hover:not(:disabled) {
-          background-color: #0F172A;
-          color: #FFFFFF;
-          border-color: #0F172A;
-          transform: translateY(-1px);
-        }
-        .hts-quick-chip:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          background-color: #F1F5F9;
-        }
-        .hts-typing-indicator {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.6rem;
-          align-self: flex-start;
-          background-color: #FFFFFF;
-          color: #475569;
-          padding: 0.55rem 0.95rem;
-          border-radius: 8px;
-          border: 1px solid #E2E8F0;
-          font-size: 0.76rem;
-          font-weight: 500;
-        }
-        .hts-typing-avatar {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          background-color: #0F172A;
-          color: #FFFFFF;
-        }
-        .hts-typing-content {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-        .hts-typing-text {
-          color: #475569;
-          font-size: 0.74rem;
-        }
-        .hts-typing-dots {
-          display: flex;
-          align-items: center;
-          gap: 3px;
-        }
-        .hts-typing-dot {
-          width: 5px;
-          height: 5px;
-          background-color: #0F172A;
-          border-radius: 50%;
-          display: inline-block;
-          animation: htsDotWave 1.4s infinite ease-in-out both;
-        }
-        .hts-typing-dot:nth-child(1) {
-          animation-delay: -0.32s;
-        }
-        .hts-typing-dot:nth-child(2) {
-          animation-delay: -0.16s;
-        }
-        .hts-typing-dot:nth-child(3) {
-          animation-delay: 0s;
-        }
-        @keyframes htsDotWave {
-          0%, 80%, 100% {
-            transform: scale(0.6);
-            opacity: 0.35;
-          }
-          40% {
-            transform: scale(1.2);
-            opacity: 1;
-          }
-        }
-        .hts-whatsapp-direct {
-          display: inline-block;
-          margin-top: 4px;
-          color: #0F172A;
-          font-weight: 600;
-          text-decoration: underline !important;
-        }
-        .hts-whatsapp-direct:hover {
-          color: #1E293B;
-        }
-        .hts-msg-bubble-error {
-          border-color: #FECACA !important;
-          background-color: #FFF5F5 !important;
-        }
-        .hts-wa-help-card {
-          margin-top: 0.65rem;
-          padding: 0.65rem 0.8rem;
-          background-color: #F0FDF4;
-          border: 1px solid #BBF7D0;
-          border-radius: 8px;
-          display: flex;
-          flex-direction: column;
-          gap: 0.4rem;
-        }
-        .hts-wa-help-text {
-          font-size: 0.72rem;
-          color: #166534;
-          font-weight: 500;
-          line-height: 1.35;
-        }
-        .hts-wa-help-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          background-color: #16A34A;
-          color: #FFFFFF !important;
-          font-weight: 600;
-          font-size: 0.74rem;
-          padding: 0.4rem 0.75rem;
-          border-radius: 6px;
-          text-decoration: none !important;
-          transition: background-color 0.2s;
-          width: fit-content;
-        }
-        .hts-wa-help-btn:hover {
-          background-color: #15803D;
-        }
-        @media (max-width: 900px) {
-          .hts-chat-container {
-            bottom: 120px;
-            right: 16px;
-            width: calc(100vw - 32px);
-            height: 480px;
-            max-height: calc(100vh - 140px);
-            border-radius: 12px;
-          }
-        }
-      `}</style>
-
-      {/* CHATBOX PANEL (TRIGGERED BY UNIFIED FLOATING BUTTON) */}
       {isOpen && (
-        <div className="hts-chat-container" id="hts-chat-box">
-          {/* HEADER */}
-          <div className="hts-chat-header">
-            <div className="hts-chat-brand">
-              <img 
-                src="/assets/law_firm_logo.jpg" 
-                alt="Logo HTS" 
-                className="hts-chat-brand-img"
-                referrerPolicy="no-referrer"
-                onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/law_firm_logo.jpg'; }}
-              />
+        <div className="fixed bottom-28 right-7 w-[385px] max-w-[calc(100vw-32px)] h-[530px] max-h-[calc(100vh-155px)] bg-white border border-slate-300 rounded-xl shadow-2xl flex flex-col z-[99999] overflow-hidden font-sans">
+          <div className="bg-slate-900 text-white px-4 py-3.5 flex items-center justify-between border-b border-slate-800">
+            <div className="flex items-center gap-2.5">
+              <img src="/assets/hts_logo_transparent_512.png" alt="Logo" className="w-7 h-7 rounded bg-white p-0.5 object-contain" />
               <div>
-                <span className="hts-chat-brand-title">Asisten Virtual HTS</span>
-                <span className="hts-chat-brand-subtitle">Kantor Hukum HTS & Partners</span>
+                <h3 className="text-sm font-bold text-white leading-tight">Asisten Virtual HTS</h3>
+                <span className="text-[10px] text-slate-400">Kantor Hukum HTS & Partners</span>
               </div>
             </div>
-            <button className="hts-chat-close-btn" onClick={() => setIsOpen(false)} title="Tutup Chat">
-              <X size={20} />
+            <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white p-1 rounded transition-colors">
+              <X size={18} />
             </button>
           </div>
 
-          {/* PERMANENT LEGAL DISCLAIMER */}
-          <div className="hts-chat-disclaimer">
-            <Scale size={15} className="hts-chat-disclaimer-icon" />
-            <span className="hts-chat-disclaimer-text">
-              Asisten ini memberi informasi umum, bukan pengganti konsultasi hukum resmi.
-            </span>
+          <div className="bg-slate-100 border-b border-slate-200 px-4 py-2 flex items-center gap-1.5 text-xs text-slate-700">
+            <Scale size={14} className="text-slate-500 flex-shrink-0" />
+            <span>Asisten ini memberi informasi umum, bukan konsultasi resmi.</span>
           </div>
 
-          {/* MESSAGES VIEW */}
-          <div className="hts-chat-messages">
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-slate-50">
             {messages.map((m) => (
               <div 
                 key={m.id} 
-                className={`hts-msg-bubble ${m.sender === 'user' ? 'hts-msg-user' : 'hts-msg-assistant'} ${m.isError ? 'hts-msg-bubble-error' : ''}`}
+                className={`max-w-[84%] p-3 rounded-lg text-xs leading-relaxed shadow-sm break-words ${
+                  m.sender === 'user' 
+                    ? 'bg-slate-900 text-white ml-auto rounded-br-none' 
+                    : 'bg-white text-slate-900 border border-slate-200 mr-auto rounded-bl-none'
+                } ${m.isError ? 'bg-red-50 border-red-200 text-red-900' : ''}`}
               >
                 {m.isError && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.4rem', color: '#DC2626', fontWeight: 600, fontSize: '0.75rem' }}>
+                  <div className="flex items-center gap-1.5 mb-1.5 text-red-600 font-semibold">
                     <AlertCircle size={14} />
                     <span>Informasi Kendala Sistem</span>
                   </div>
                 )}
                 <div>{m.content}</div>
                 {m.id === 'welcome' && (
-                  <div>
-                    <a 
-                      href="https://wa.me/6287773115795" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="hts-whatsapp-direct"
-                    >
+                  <div className="mt-1">
+                    <a href="https://wa.me/6287773115795" target="_blank" rel="noopener noreferrer" className="text-blue-600 font-semibold underline hover:text-blue-800">
                       Konsultasi langsung via WhatsApp →
                     </a>
                   </div>
                 )}
                 {m.hasWaHelp && (
-                  <div className="hts-wa-help-card">
-                    <span className="hts-wa-help-text">
-                      Hubungi Tim Advokat HTS & Partners (PERADI) untuk bantuan dan konsultasi langsung:
-                    </span>
-                    <a 
-                      href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS%20%26%20Partners,%20saya%20ingin%20konsultasi%20hukum" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="hts-wa-help-btn"
-                    >
-                      <PhoneCall size={13} />
+                  <div className="mt-2.5 p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg flex flex-col gap-1.5">
+                    <span className="text-emerald-800 font-medium text-[11px]">Hubungi Tim Advokat HTS & Partners:</span>
+                    <a href="https://wa.me/6287773115795" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 bg-emerald-600 text-white font-semibold text-[11px] px-2.5 py-1 rounded hover:bg-emerald-700 transition-colors w-fit">
+                      <PhoneCall size={12} />
                       <span>Chat WhatsApp: 0877-7311-5795</span>
                     </a>
                   </div>
@@ -1099,38 +577,26 @@ export default function App() {
             ))}
             
             {isLoading && (
-              <div className="hts-typing-indicator" role="status" aria-label="Asisten sedang menganalisis">
-                <div className="hts-typing-avatar">
-                  <Scale size={12} />
+              <div className="flex items-center gap-2 bg-white text-slate-700 p-2.5 rounded-lg border border-slate-200 w-fit text-xs font-medium shadow-sm">
+                <div className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center">
+                  <Scale size={11} />
                 </div>
-                <div className="hts-typing-content">
-                  <span className="hts-typing-text">Menelaah analisis hukum</span>
-                  <div className="hts-typing-dots">
-                    <span className="hts-typing-dot" />
-                    <span className="hts-typing-dot" />
-                    <span className="hts-typing-dot" />
-                  </div>
-                </div>
+                <span>Menelaah analisis hukum...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* PREDEFINED QUICK-REPLIES */}
           {messageCount < MAX_MESSAGES && (
-            <div className="hts-quick-replies-area">
-              <div className="hts-quick-replies-header">
-                <span className="hts-quick-replies-title">Pilih Topik Konsultasi Cepat:</span>
-              </div>
-              <div className="hts-quick-replies-list">
+            <div className="p-2 bg-slate-50 border-t border-slate-200 flex flex-col gap-1.5">
+              <span className="text-[10px] font-semibold text-slate-600 uppercase tracking-wide px-1">Topik Cepat:</span>
+              <div className="flex gap-1.5 overflow-x-auto pb-1">
                 {QUICK_REPLIES.map((reply) => (
                   <button
                     key={reply.id}
-                    type="button"
-                    className="hts-quick-chip"
                     onClick={() => handleQuickReply(reply.query)}
                     disabled={isLoading}
-                    title={reply.query}
+                    className="bg-white text-slate-800 border border-slate-200 rounded-full px-2.5 py-1 text-[11px] font-medium hover:bg-slate-900 hover:text-white transition-colors flex-shrink-0 flex items-center gap-1"
                   >
                     <span>{reply.icon}</span>
                     <span>{reply.label}</span>
@@ -1140,27 +606,18 @@ export default function App() {
             </div>
           )}
 
-          {/* INPUT FORM & RATE LIMIT CHECK */}
-          <div className="hts-chat-input-area">
+          <div className="p-3 bg-white border-t border-slate-200">
             {messageCount >= MAX_MESSAGES ? (
-              <div className="hts-rate-limit-warning">
-                Anda telah mencapai batas {MAX_MESSAGES} pesan sesi ini. Silakan konsultasi lebih mendalam langsung melalui WhatsApp kami di 
-                <a 
-                  href="https://wa.me/6287773115795" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hts-whatsapp-direct"
-                  style={{ display: 'block', marginTop: '4px' }}
-                >
-                  WhatsApp HTS: 0877-7311-5795
-                </a>
+              <div className="bg-red-50 border border-red-200 rounded p-2 text-center text-[11px] text-red-900 font-medium">
+                Batas sesi tercapai. Hubungi kami via 
+                <a href="https://wa.me/6287773115795" target="_blank" rel="noopener noreferrer" className="underline font-bold block mt-0.5">WhatsApp: 0877-7311-5795</a>
               </div>
             ) : (
-              <form className="hts-chat-form" onSubmit={handleSend}>
+              <form onSubmit={handleSend} className="flex gap-2">
                 <input
                   type="text"
-                  className="hts-chat-input"
-                  placeholder="Ketik pertanyaan hukum umum Anda..."
+                  className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900/20"
+                  placeholder="Ketik pertanyaan hukum..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   disabled={isLoading}
@@ -1168,11 +625,10 @@ export default function App() {
                 />
                 <button 
                   type="submit" 
-                  className="hts-chat-submit" 
                   disabled={!inputValue.trim() || isLoading}
-                  title="Kirim pesan"
+                  className="bg-slate-900 text-white rounded-lg px-3 py-2 flex items-center justify-center hover:bg-slate-800 disabled:opacity-50 transition-colors"
                 >
-                  <Send size={16} />
+                  <Send size={14} />
                 </button>
               </form>
             )}
@@ -1180,41 +636,27 @@ export default function App() {
         </div>
       )}
 
-      {/* FLOATING ACTION BUTTONS (ALWAYS VISIBLE & HIGH-PRIORITY INTERACTION) */}
-      <div className="hts-fab-group" id="hts-floating-group">
-        {/* Tombol 1: WhatsApp Resmi (Warna Hijau WhatsApp) */}
+      <div className="fixed bottom-7 right-7 z-40 flex flex-col items-end gap-3 pointer-events-auto">
         <a
-          href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS%20%26%20Partners,%20saya%20ingin%20berkonsultasi%20mengenai%20permasalahan%20hukum"
+          href="https://wa.me/6287773115795?text=Halo%20Kantor%20Hukum%20HTS"
           target="_blank"
           rel="noopener noreferrer"
-          className="hts-fab-wa"
-          id="fab-whatsapp"
-          title="Chat WhatsApp Resmi HTS (0877-7311-5795)"
-          aria-label="Chat WhatsApp Resmi HTS"
+          className="inline-flex items-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-full shadow-lg font-semibold text-xs hover:bg-emerald-700 transition-all transform hover:-translate-y-0.5"
         >
-          <span className="hts-fab-wa-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-            </svg>
-          </span>
-          <span>Chat WhatsApp</span>
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>WhatsApp</span>
         </a>
 
-        {/* Tombol 2: Asisten AI HTS (Warna Navy Khas HTS & Badge AI) */}
         <button
-          type="button"
-          className={`hts-fab-ai ${isOpen ? 'hts-fab-ai-active' : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
           id="fab-chatbot"
-          onClick={() => setIsOpen(prev => !prev)}
-          title={isOpen ? "Tutup Asisten AI" : "Buka Asisten AI HTS"}
-          aria-label={isOpen ? "Tutup Asisten AI" : "Buka Asisten AI HTS"}
+          className="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-full shadow-lg font-semibold text-xs hover:bg-slate-800 transition-all transform hover:-translate-y-0.5"
         >
-          <span style={{ display: 'inline-flex', alignItems: 'center', color: '#C5A880' }}>
-            <Scale size={18} />
-          </span>
-          <span>{isOpen ? 'Tutup Asisten ✕' : 'Asisten AI HTS'}</span>
-          <span className="hts-fab-ai-badge">AI</span>
-          <span className="hts-fab-ai-dot" />
+          <Scale size={16} className="text-amber-400" />
+          <span>{isOpen ? 'Tutup Asisten ✕' : 'Asisten AI'}</span>
+          <span className="bg-white/20 px-1.5 py-0.5 rounded-full text-[10px]">AI</span>
         </button>
       </div>
     </>

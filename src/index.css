@@ -1,1 +1,297 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg-bg: #071326;
+  --color-surface: #0E2244;
+  --color-surface-subtle: #122B55;
+  --color-surface-muted: #173668;
+  --color-gold: #D4AF37;
+  --color-border-custom: #1E3E72;
+  --color-border-hover: #3B82F6;
+}
+
+@layer base {
+  body {
+    background-color: #071326;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(30, 64, 175, 0.35) 0%, transparent 65%),
+      radial-gradient(circle at 100% 40%, rgba(29, 78, 216, 0.2) 0%, transparent 55%),
+      radial-gradient(circle at 0% 80%, rgba(15, 23, 42, 0.5) 0%, transparent 55%);
+    background-attachment: fixed;
+    color: #F8FAFC;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5 {
+    color: #FFFFFF;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer components {
+  /* ---------- Layout ---------- */
+  .container {
+    @apply w-full max-w-[1180px] mx-auto px-8;
+  }
+  section {
+    @apply py-24 md:py-28;
+  }
+  .section-header {
+    @apply text-center max-w-[680px] mx-auto mb-14;
+  }
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight;
+  }
+  .section-desc {
+    @apply text-lg text-slate-200 leading-relaxed;
+  }
+
+  /* ---------- Navbar ---------- */
+  header {
+    @apply sticky top-0 z-50 bg-[#08142a]/95 backdrop-blur-md border-b border-border-custom;
+  }
+  .nav-inner {
+    @apply grid grid-cols-[auto_1fr_auto] items-center gap-6 h-[82px];
+  }
+  .brand-logo-wrap { @apply flex items-center gap-3.5; }
+  .brand-logo-img { @apply w-11 h-11 object-contain bg-surface/80 rounded border border-border-custom p-0.5; }
+  .brand-text { @apply flex flex-col; }
+  .brand-title { @apply font-bold text-lg text-white leading-tight tracking-tight; }
+  .brand-tagline { @apply text-[0.72rem] font-medium text-blue-200 tracking-wide; }
+  .nav-links { @apply flex gap-7 items-center justify-center list-none; }
+  .nav-link { @apply text-sm font-medium text-slate-200 hover:text-white transition-colors duration-200; }
+  .nav-actions-grid { @apply grid grid-cols-3 items-center gap-2.5; }
+  .btn-nav-client { @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-md border border-sky-400 bg-sky-400/10 text-sky-100 text-sm font-semibold hover:bg-sky-400 hover:text-slate-900 transition-all duration-200 cursor-pointer; }
+  .btn-nav-admin { @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-md border border-gold bg-gold/15 text-amber-100 text-sm font-semibold hover:bg-gold hover:text-slate-900 transition-all duration-200 cursor-pointer; }
+  .btn-nav-wa { @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md border border-emerald-700 text-white bg-emerald-500 font-semibold text-sm hover:bg-emerald-600 transition-all duration-200 shadow-md shadow-emerald-500/20; }
+  .mobile-menu-btn {
+    @apply hidden items-center bg-surface/80 border border-border-custom rounded px-3 py-2 cursor-pointer text-white text-xl;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  .mobile-menu-btn:active { transform: scale(0.95); }
+  .mobile-menu-btn[aria-expanded="true"] { @apply bg-surface border-sky-400/60 text-sky-300; }
+  .mobile-menu {
+    @apply hidden flex-col gap-4 p-5 border-t border-border-custom bg-[#08162d];
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.25s ease-in-out;
+  }
+  .mobile-menu.open {
+    display: flex !important;
+    max-height: 420px;
+    opacity: 1;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+  .mobile-menu .nav-link {
+    @apply text-base py-1.5 border-b border-white/5;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .mobile-menu.open .nav-link {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 1040px) {
+    .nav-inner { grid-template-columns: 1fr auto !important; }
+    .nav-links, .nav-actions-grid { display: none !important; }
+    .mobile-menu-btn { display: flex !important; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero-section {
+    @apply relative overflow-hidden flex items-center justify-center py-24 md:py-[6.5rem] border-b border-border-custom;
+    background: linear-gradient(180deg, #071326 0%, #0B1D3A 50%, #08162D 100%);
+  }
+  .hero-justitia-backdrop {
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1100px] h-full pointer-events-none z-[1] flex items-center justify-center opacity-[0.16] mix-blend-screen select-none;
+  }
+  .hero-justitia-img { @apply w-full max-w-[920px] h-full max-h-[520px] object-contain object-center; filter: contrast(130%) brightness(120%); }
+  .hero-grid { @apply relative z-[2] flex flex-col items-center text-center max-w-[860px] mx-auto; }
+  .hero-content { @apply flex flex-col items-center text-center; }
+  .hero-emblem-wrap { @apply flex justify-center items-center mb-6; }
+  .hero-emblem-img { @apply w-[76px] h-[76px] object-contain rounded-xl border border-border-custom bg-surface p-1.5 shadow-xl; }
+  .hero-badge { @apply inline-flex items-center gap-1.5 px-4 py-1.5 bg-sky-400/10 border border-sky-400/30 rounded-full text-[0.78rem] font-semibold text-sky-200 tracking-widest uppercase mb-5; }
+  .hero-title { @apply text-3xl md:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tighter drop-shadow-md; }
+  .hero-subtitle { @apply text-lg text-slate-200 font-normal mb-9 max-w-[680px] leading-relaxed text-center; }
+  .hero-cta-group { @apply flex flex-wrap items-center justify-center gap-4; }
+  .btn-primary-wa { @apply inline-flex items-center gap-2.5 px-7 py-3.5 bg-emerald-500 text-white rounded-md font-semibold text-base border border-emerald-700 hover:bg-emerald-600 transition-all duration-200 shadow-lg shadow-emerald-500/25; }
+  .btn-secondary { @apply inline-flex items-center px-7 py-3.5 bg-surface/85 text-white border border-border-custom rounded-md font-semibold text-base hover:border-sky-400 hover:bg-[#163668] transition-all duration-200 shadow-sm; }
+  .hero-trust-bar { @apply flex flex-wrap items-center justify-center gap-6 border-t border-border-custom mt-14 pt-8 w-full max-w-[720px]; }
+  .hero-trust-item { @apply flex items-center gap-2 text-sm font-medium text-slate-300; }
+  .hero-trust-sep { @apply text-border-custom text-sm select-none; }
+
+  /* ---------- Services / Tabs ---------- */
+  .services-section { @apply bg-[#081932] border-y border-border-custom; }
+  .services-tabs-nav { @apply flex flex-wrap justify-center gap-3 mb-10; }
+  .tab-btn { @apply px-6 py-3 font-semibold text-base text-slate-200 bg-[#0d2244] border border-border-custom rounded-md cursor-pointer transition-all duration-200 shadow-sm hover:border-sky-400 hover:bg-blue-700 hover:text-white; }
+  .tab-btn.active { @apply border-sky-400 bg-blue-700 text-white; }
+  .tab-content { @apply hidden bg-surface border border-border-custom rounded-xl p-11 shadow-xl; }
+  .tab-content.active { display: block !important; }
+  .tab-content-header { @apply flex flex-wrap items-center justify-between gap-4 mb-8 pb-5 border-b border-border-custom; }
+  .tab-content-title { @apply text-[1.45rem] font-bold text-white tracking-tight; }
+  .tab-content-sub { @apply text-base text-slate-300 mt-1; }
+  .services-list { @apply grid gap-5 list-none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .service-item-card { @apply bg-[#0f2750] border border-border-custom rounded-md p-5 flex flex-col justify-between gap-5 transition-all duration-200 shadow-sm hover:border-sky-400 hover:shadow-lg hover:-translate-y-0.5; }
+  .service-item-header { @apply flex items-start gap-3; }
+  .service-icon { @apply w-6 h-6 flex-shrink-0 flex items-center justify-center rounded bg-[#173668] border border-[#285494] text-slate-100 text-sm font-bold leading-none mt-0.5; }
+  .service-title-text { @apply font-semibold text-base text-slate-100 leading-snug; }
+  .service-wa-btn { @apply inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-blue-200 bg-[#071326] border border-border-custom rounded hover:bg-blue-700 hover:text-white hover:border-sky-400 transition-all duration-200 self-start; }
+
+  /* ---------- About ---------- */
+  .about-section { @apply bg-bg-bg; }
+  .about-grid { @apply grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-16 items-center; }
+  .about-lead { @apply text-lg text-white font-medium mb-5 leading-relaxed; }
+  .about-body { @apply text-slate-200 mb-8 leading-relaxed; }
+  .peradi-badge { @apply inline-flex items-center gap-2.5 px-5 py-3 bg-surface border border-border-custom rounded-md text-sm font-semibold text-amber-100 shadow-sm; }
+  .hero-artwork-box { @apply bg-surface rounded-lg border border-border-custom; }
+
+  /* ---------- Consult section ---------- */
+  .consult-section { @apply bg-[#081932] border-t border-border-custom; }
+  .consult-grid { @apply grid grid-cols-1 lg:grid-cols-[1fr_1.35fr] gap-14 items-start; }
+  .consult-info-box { @apply flex flex-col gap-6; }
+  .consult-badge { @apply inline-flex items-center gap-2 bg-sky-400/15 border border-sky-400/35 text-sky-200 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase self-start; }
+  .consult-title { @apply text-3xl font-bold text-white leading-tight tracking-tight; }
+  .consult-desc { @apply text-slate-200 leading-relaxed; }
+  .consult-guarantees { @apply flex flex-col gap-4 mt-2; }
+  .consult-guarantee-item { @apply flex items-start gap-3.5 bg-surface border border-border-custom p-4 rounded-md shadow-sm; }
+  .consult-guarantee-icon { @apply text-xl text-sky-400 flex-shrink-0 mt-0.5; }
+  .consult-guarantee-title { @apply font-semibold text-white mb-1; }
+  .consult-guarantee-text { @apply text-sm text-slate-300 leading-relaxed; }
+  .consult-form-card { @apply bg-surface border border-border-custom rounded-xl p-8 md:p-10 shadow-2xl; }
+
+  /* ---------- Form ---------- */
+  .form-header { @apply mb-7 pb-5 border-b border-border-custom; }
+  .form-header-title { @apply text-[1.35rem] font-bold text-white mb-1.5 tracking-tight; }
+  .form-header-sub { @apply text-sm text-slate-300; }
+  .form-group { @apply flex flex-col gap-2 mb-6; }
+  .form-label { @apply text-sm font-semibold text-slate-100; }
+  .form-req { @apply text-red-400 font-bold; }
+  .form-input, .form-select, .form-textarea {
+    @apply w-full px-4 py-3 border border-border-custom rounded-md text-slate-100 bg-[#071326] outline-none transition-all duration-200 placeholder:text-slate-400;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    @apply border-sky-400 ring-2 ring-sky-400/25;
+  }
+  .form-textarea { @apply min-h-[120px] resize-y; }
+  .form-privacy-note { @apply flex items-start gap-2 text-xs text-slate-300 leading-relaxed mb-6; }
+  .btn-submit-consult { @apply w-full inline-flex items-center justify-center gap-2.5 py-3.5 px-6 bg-blue-700 text-white border border-blue-400 rounded-md font-semibold text-slate-100 hover:bg-blue-600 hover:border-blue-400 transition-all duration-200 shadow-lg shadow-blue-700/30 disabled:opacity-60 disabled:cursor-not-allowed; }
+
+  /* ---------- Success box ---------- */
+  .consult-success-box { @apply hidden flex-col gap-5 bg-emerald-950 border border-emerald-700 rounded-md p-8 text-center; }
+  .consult-success-box.show { display: flex !important; }
+  .consult-success-icon { @apply w-12 h-12 mx-auto flex items-center justify-center rounded-full bg-emerald-500 text-white text-xl; }
+  .consult-success-title { @apply text-xl font-bold text-emerald-100 mb-1; }
+  .consult-ticket-pill { @apply inline-block bg-emerald-900 text-emerald-200 font-bold text-sm px-3.5 py-1.5 rounded-full border border-emerald-500 mx-auto mt-1; }
+  .consult-success-text { @apply text-sm text-emerald-100 leading-relaxed; }
+  .consult-success-actions { @apply flex flex-col gap-3 w-full mt-2; }
+  .btn-wa-forward { @apply inline-flex items-center justify-center gap-2 w-full py-3.5 px-5 bg-emerald-500 text-white text-sm font-semibold rounded-md border border-emerald-700 hover:bg-emerald-600 transition-all duration-200; }
+  .btn-reset-form { @apply inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-transparent text-blue-200 border border-border-custom rounded-md text-sm font-semibold hover:bg-surface hover:border-sky-400 transition-all duration-200 cursor-pointer; }
+
+  /* ---------- Contact ---------- */
+  .contact-section { @apply bg-bg-bg border-t border-border-custom; }
+  .contact-grid { @apply grid grid-cols-1 md:grid-cols-3 gap-7; }
+  .contact-card { @apply bg-surface border border-border-custom rounded-xl p-8 flex flex-col justify-between shadow-sm hover:border-sky-400 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200; }
+  .contact-card-top { @apply mb-7; }
+  .contact-pill-icon { @apply w-11 h-11 flex items-center justify-center rounded-md bg-[#173668] border border-[#285494] text-sky-400 text-xl mb-5; }
+  .contact-card-title { @apply text-xl font-bold text-white mb-2 tracking-tight; }
+  .contact-card-text { @apply text-slate-200 leading-relaxed; }
+  .contact-btn { @apply inline-flex items-center justify-center gap-2 py-3 px-5 rounded-md font-semibold text-sm border border-border-custom text-slate-200 bg-[#071326] hover:bg-blue-700 hover:text-white hover:border-sky-400 transition-all duration-200; }
+
+  /* ---------- Map ---------- */
+  .map-container-card { @apply mt-11 bg-surface border border-border-custom rounded-xl overflow-hidden shadow-sm hover:border-sky-400 hover:shadow-lg transition-all duration-200; }
+  .map-header-bar { @apply flex flex-wrap items-center justify-between gap-2 bg-[#071326] text-white px-6 py-3.5 border-b border-border-custom; }
+  .map-header-title { @apply flex items-center gap-2 font-semibold text-slate-100; }
+  .map-iframe-wrapper { @apply relative w-full h-[380px] bg-[#071326]; }
+  .map-iframe-wrapper iframe { @apply w-full h-full border-0; }
+  .map-footer-bar { @apply flex flex-wrap items-center justify-between gap-4 px-6 py-4 bg-[#0a1c38] border-t border-border-custom; }
+  .map-address-text { @apply text-sm text-slate-200; }
+  .map-action-btn { @apply inline-flex items-center gap-1.5 bg-blue-700 text-white rounded px-4 py-2.5 text-sm font-semibold hover:bg-blue-600 transition-all duration-200; }
+
+  /* ---------- Footer ---------- */
+  footer { @apply bg-[#040a15] border-t border-border-custom py-20 pb-10; }
+  .footer-grid { @apply grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-14 mb-12; }
+  .footer-brand { @apply flex flex-col gap-4; }
+  .footer-desc { @apply text-sm text-slate-300 max-w-[440px] leading-relaxed; }
+  .footer-motto-quote { @apply text-sky-200 text-sm font-semibold; }
+  .footer-heading { @apply text-sm font-bold text-white uppercase tracking-widest mb-5; }
+  .footer-nav-list { @apply list-none flex flex-col gap-2.5 text-sm; }
+  .footer-nav-list a { @apply text-slate-300 hover:text-sky-400 transition-colors duration-200; }
+  .footer-contact-info { @apply flex flex-col gap-3 text-sm text-slate-300; }
+  .footer-bottom { @apply border-t border-border-custom pt-8 text-center text-slate-400 text-sm; }
+
+  /* ---------- Portal modal ---------- */
+  .portal-modal-overlay { @apply fixed inset-0 z-[99999] bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center p-5 opacity-0 transition-opacity duration-300; }
+  .portal-modal-overlay.active { display: flex !important; opacity: 1 !important; }
+  .portal-window { @apply bg-white w-full max-w-[1060px] max-h-[92vh] rounded-xl shadow-2xl flex flex-col overflow-hidden border border-slate-300; }
+  .portal-header { @apply bg-slate-900 text-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800; }
+  .portal-header-left { @apply flex items-center gap-3; }
+  .portal-header-emblem { @apply w-9 h-9 rounded bg-white p-0.5 object-contain; }
+  .portal-header-title { @apply text-base md:text-lg font-bold text-white leading-tight my-0; }
+  .portal-header-subtitle { @apply text-xs text-slate-400 my-0; }
+  .portal-header-right { @apply flex items-center gap-3; }
+  .portal-badge-db { @apply inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-semibold px-2.5 py-1 rounded-full; }
+  .portal-badge-db.error { @apply bg-red-500/15 border-red-500/40 text-red-300; }
+  .portal-close-btn { @apply w-8 h-8 flex items-center justify-center bg-transparent border border-slate-700 text-slate-400 rounded cursor-pointer text-lg leading-none hover:bg-slate-800 hover:text-white hover:border-slate-500 transition-all duration-150; }
+  .portal-tabs-nav { @apply flex bg-[#0b1728] border-b border-slate-800 px-5 gap-2; }
+  .portal-tab-btn { @apply bg-transparent border-b-2 border-transparent text-slate-400 px-4 py-3 font-semibold text-sm cursor-pointer inline-flex items-center gap-2 transition-all duration-150 hover:text-slate-200; }
+  .portal-tab-btn.active { @apply text-sky-400 border-sky-400 bg-sky-400/10; }
+  .portal-tab-btn.admin-tab.active { @apply text-amber-300 border-amber-300 bg-amber-300/10; }
+  .portal-body { @apply flex-1 overflow-y-auto p-6 bg-slate-50 flex flex-col gap-5; }
+  .portal-client-card { @apply max-w-[580px] mx-auto bg-white border border-slate-200 rounded-xl p-8 shadow-sm my-6; }
+  .client-result-box { @apply mt-6 border-t border-slate-200 pt-5; }
+  .client-ticket-badge { @apply inline-block font-mono font-bold text-sm bg-blue-50 text-blue-700 px-2.5 py-1 rounded border border-blue-200; }
+  .portal-auth-card { @apply max-w-[440px] mx-auto bg-white border border-slate-200 rounded-xl p-8 text-center shadow-sm my-10; }
+  .portal-auth-icon { @apply w-14 h-14 mx-auto mb-5 flex items-center justify-center bg-slate-100 rounded-full text-2xl border border-slate-300; }
+  .portal-auth-title { @apply text-xl font-bold text-slate-900 mb-2; }
+  .portal-auth-desc { @apply text-sm text-slate-600 mb-6 leading-relaxed; }
+  .portal-auth-input { @apply w-full px-4 py-3 border border-slate-300 rounded-lg text-slate-900 text-center tracking-widest font-semibold mb-3 bg-slate-50 focus:outline-none focus:border-slate-900 focus:bg-white; }
+  .portal-auth-btn { @apply w-full py-3 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition-colors duration-150 cursor-pointer; }
+  .portal-security-notice { @apply text-xs text-slate-600 mt-5 p-2.5 bg-slate-50 rounded border border-slate-200 text-left leading-relaxed; }
+  .portal-metrics-grid { @apply grid grid-cols-2 lg:grid-cols-4 gap-4; }
+  .portal-metric-card { @apply bg-white border border-slate-200 rounded-lg p-4 flex flex-col gap-1; }
+  .portal-metric-label { @apply text-xs font-semibold text-slate-600 uppercase tracking-wide; }
+  .portal-metric-val { @apply text-2xl font-extrabold text-slate-900 leading-tight; }
+  .portal-metric-val.pending { color: #D97706; }
+  .portal-metric-val.progress { color: #2563EB; }
+  .portal-metric-val.done { color: #16A34A; }
+  .portal-controls-bar { @apply bg-white border border-slate-200 rounded-lg p-3.5 flex flex-wrap items-center justify-between gap-4; }
+  .portal-search-input { @apply flex-1 min-w-[200px] px-3.5 py-2 border border-slate-300 rounded text-sm focus:outline-none focus:border-slate-900; }
+  .portal-filter-select { @apply px-3.5 py-2 border border-slate-300 rounded text-sm bg-white font-medium; }
+  .portal-btn-action { @apply inline-flex items-center gap-1.5 px-3.5 py-2 rounded font-semibold text-sm border border-slate-300 bg-white text-slate-900 hover:bg-slate-100 hover:border-slate-400 transition-all duration-150 cursor-pointer; }
+  .portal-btn-action.csv { @apply bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100; }
+  .portal-list-wrap { @apply flex flex-col gap-4; }
+  .portal-consult-card { @apply bg-white border border-slate-200 rounded-lg p-5 flex flex-col gap-3.5 shadow-sm hover:border-slate-400 hover:shadow-md transition-all duration-200; }
+  .portal-consult-card.pending { border-left: 4px solid #F59E0B; }
+  .portal-consult-card.progress { border-left: 4px solid #3B82F6; }
+  .portal-consult-card.done { border-left: 4px solid #22C55E; }
+  .portal-card-top { @apply flex flex-wrap items-center justify-between gap-3 pb-2.5 border-b border-slate-100; }
+  .portal-card-ticket { @apply font-mono font-bold text-sm text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200; }
+  .portal-card-time { @apply text-xs text-slate-600; }
+  .portal-status-pill { @apply text-xs font-bold px-2.5 py-1 rounded-full tracking-wide uppercase; }
+  .portal-status-pill.MENUNGGU_VERIFIKASI { @apply bg-amber-100 text-amber-900 border border-amber-300; }
+  .portal-status-pill.SEDANG_DITANGANI { @apply bg-blue-100 text-blue-900 border border-blue-300; }
+  .portal-status-pill.SELESAI, .portal-status-pill.KONSULTASI_SELESAI { @apply bg-emerald-100 text-emerald-900 border border-emerald-300; }
+  .portal-status-pill.DIBATALKAN, .portal-status-pill.ARSIP { @apply bg-slate-100 text-slate-700 border border-slate-300; }
+  .portal-client-info { @apply grid grid-cols-1 md:grid-cols-3 gap-3; }
+  .portal-info-item { @apply flex flex-col gap-1; }
+  .portal-info-label { @apply text-[0.72rem] text-slate-600 font-semibold uppercase; }
+  .portal-info-value { @apply text-sm text-slate-900 font-semibold; }
+  .portal-info-phone { @apply text-emerald-800 font-mono font-bold; }
+  .portal-card-uraian { @apply bg-slate-50 border border-slate-200 rounded px-4 py-3 text-sm text-slate-700 leading-relaxed whitespace-pre-wrap; }
+  .portal-advocate-note-box { @apply bg-amber-50 border border-amber-300 rounded px-3.5 py-2.5 text-sm text-amber-900 flex items-start justify-between gap-2; }
+  .portal-card-actions { @apply flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-100; }
+  .portal-action-group-left { @apply flex flex-wrap items-center gap-2.5; }
+  .portal-btn-wa-client { @apply inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded font-semibold text-sm hover:bg-emerald-700 transition-colors duration-150 no-underline; }
+  .portal-btn-tel-client { @apply inline-flex items-center gap-1.5 bg-white text-slate-900 border border-slate-300 px-3 py-2 rounded font-semibold text-sm hover:bg-slate-100 no-underline; }
+  .portal-action-group-right { @apply flex items-center gap-2; }
+  .portal-select-status { @apply px-2.5 py-1.5 border border-slate-300 rounded text-xs font-semibold bg-white text-slate-900; }
+  .portal-btn-mini { @apply px-2.5 py-1.5 border border-slate-200 rounded bg-white text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-150 cursor-pointer; }
+  .portal-btn-mini.danger:hover { @apply bg-red-100 text-red-600 border-red-300; }
+}

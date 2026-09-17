@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0E2244"/>
+      <stop offset="100%" stop-color="#071326"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E5AB"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#B8962E"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background navy -->
+  <rect x="16" y="16" width="480" height="480" rx="36" fill="url(#navyGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="36" fill="none" stroke="url(#goldGrad)" stroke-width="6"/>
+
+  <!-- Scales of Justice (Lady Justice) -->
+  <g transform="translate(256, 200)" stroke="url(#goldGrad)" fill="none" stroke-width="14" stroke-linecap="round">
+    <!-- center post -->
+    <line x1="0" y1="-70" x2="0" y2="70"/>
+    <!-- pivot knob -->
+    <circle cx="0" cy="-70" r="14" fill="url(#goldGrad)" stroke="none"/>
+    <!-- beam -->
+    <line x1="-95" y1="-62" x2="95" y2="-62"/>
+    <!-- left pan strings -->
+    <line x1="-95" y1="-60" x2="-120" y2="-10"/>
+    <line x1="-95" y1="-60" x2="-70" y2="-10"/>
+    <!-- right pan strings -->
+    <line x1="95" y1="-60" x2="120" y2="-10"/>
+    <line x1="95" y1="-60" x2="70" y2="-10"/>
+    <!-- left pan -->
+    <path d="M -135 -10 Q -120 8 -105 -10 Z" fill="url(#goldGrad)" stroke="none"/>
+    <!-- right pan -->
+    <path d="M 105 -10 Q 120 8 135 -10 Z" fill="url(#goldGrad)" stroke="none"/>
+  </g>
+
+  <!-- HTS letters -->
+  <g fill="#FFFFFF" font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">
+    <text x="256" y="352" font-size="120" font-weight="700" letter-spacing="10">HTS</text>
+  </g>
+  <text x="256" y="390" font-size="22" fill="#D4AF37" font-family="Verdana, sans-serif" text-anchor="middle" letter-spacing="8">LAW FIRM</text>
+</svg>
